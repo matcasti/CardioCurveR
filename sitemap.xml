@@ -9,14 +9,20 @@
 <url><loc>https://matcasti.github.io/CardioCurveR/index.html</loc></url>
 <url><loc>https://matcasti.github.io/CardioCurveR/reference/CardioCurveR-package.html</loc></url>
 <url><loc>https://matcasti.github.io/CardioCurveR/reference/CardioCurveR.html</loc></url>
+<url><loc>https://matcasti.github.io/CardioCurveR/reference/boot_RRi_parameters.html</loc></url>
 <url><loc>https://matcasti.github.io/CardioCurveR/reference/clean_outlier.html</loc></url>
 <url><loc>https://matcasti.github.io/CardioCurveR/reference/dual_logistic.html</loc></url>
 <url><loc>https://matcasti.github.io/CardioCurveR/reference/estimate_RRi_curve.html</loc></url>
 <url><loc>https://matcasti.github.io/CardioCurveR/reference/filter_signal.html</loc></url>
 <url><loc>https://matcasti.github.io/CardioCurveR/reference/index.html</loc></url>
 <url><loc>https://matcasti.github.io/CardioCurveR/reference/plot.RRi_fit.html</loc></url>
+<url><loc>https://matcasti.github.io/CardioCurveR/reference/plot.boot_RRi_fit.html</loc></url>
 <url><loc>https://matcasti.github.io/CardioCurveR/reference/print.RRi_fit.html</loc></url>
+<url><loc>https://matcasti.github.io/CardioCurveR/reference/print.boot_RRi_fit.html</loc></url>
 <url><loc>https://matcasti.github.io/CardioCurveR/reference/print.summary.RRi_fit.html</loc></url>
+<url><loc>https://matcasti.github.io/CardioCurveR/reference/print.summary.boot_RRi_fit.html</loc></url>
+<url><loc>https://matcasti.github.io/CardioCurveR/reference/sim_RRi.html</loc></url>
 <url><loc>https://matcasti.github.io/CardioCurveR/reference/summary.RRi_fit.html</loc></url>
+<url><loc>https://matcasti.github.io/CardioCurveR/reference/summary.boot_RRi_fit.html</loc></url>
 </urlset>
 
