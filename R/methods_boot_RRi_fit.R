@@ -8,6 +8,7 @@
 #' @param ... Additional arguments passed to \code{print}.
 #'
 #' @importFrom utils head
+#'
 #' @export
 print.boot_RRi_fit <- function(x, ...) {
   cat("Bootstrap RRi Parameter Estimates\n")
@@ -31,6 +32,7 @@ print.boot_RRi_fit <- function(x, ...) {
 #'
 #' @importFrom data.table as.data.table transpose `:=` .SD
 #' @importFrom stats median IQR quantile sd
+#'
 #' @export
 summary.boot_RRi_fit <- function(object, robust = TRUE, ...) {
   dt <- data.table::as.data.table(object)
