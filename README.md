@@ -1,55 +1,194 @@
+CardioCurveR: Nonlinear Modeling of R-R Interval Dynamics
+================
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# CardioCurveR
-
-<!-- badges: start -->
-
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)  
 [![CRAN
-status](https://www.r-pkg.org/badges/version/CardioCurveR)](https://CRAN.R-project.org/package=CardioCurveR)
-[![R-CMD-check](https://github.com/matcasti/CardioCurveR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/matcasti/CardioCurveR/actions/workflows/R-CMD-check.yaml)
+status](https://www.r-pkg.org/badges/version/CardioCurveR)](https://CRAN.R-project.org/package=CardioCurveR)  
+[![R-CMD-check](https://github.com/matcasti/CardioCurveR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/matcasti/CardioCurveR/actions/workflows/R-CMD-check.yaml)  
 [![Codecov test
 coverage](https://codecov.io/gh/matcasti/CardioCurveR/graph/badge.svg)](https://app.codecov.io/gh/matcasti/CardioCurveR)
-<!-- badges: end -->
 
-The goal of CardioCurveR is to …
+# CardioCurveR: Nonlinear Modeling of R-R Interval Dynamics
+
+CardioCurveR provides an automated and robust framework for modeling RR
+interval (RRi) signals. The package is built around a dual-logistic
+model, as described by Castillo-Aguilar et al. (2025), which captures
+both the rapid drop in RRi during exercise and the subsequent recovery
+phase. In our formulation, the model is defined by the following
+equation:
+
+$$
+RRi(t) = \alpha + \frac{\beta}{1 + \exp\left\{\lambda\,(t-\tau)\right\}} - \frac{c\,\beta}{1 + \exp\left\{\phi\,(t-\tau-\delta)\right\}},
+$$
+
+where $\alpha$ represents the baseline RRi level, $\beta$ controls the
+amplitude of the drop, $\lambda$ modulates the steepness of the drop
+phase, $\tau$ is the time center of the drop, $c$ scales the recovery
+amplitude relative to $\beta$, $\phi$ controls the steepness of the
+recovery phase, and $\delta$ shifts the recovery phase in time relative
+to the drop.
+
+CardioCurveR also incorporates advanced signal filtering techniques
+using a zero-phase Butterworth filter to preprocess the RRi data and
+remove edge artifacts. This ensures that the dynamic fluctuations are
+preserved for subsequent non-linear modeling.
 
 ## Installation
 
-You can install the development version of CardioCurveR like so:
+To install the development version of CardioCurveR, run the following
+commands in R. Make sure that you have the **devtools** package
+installed:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+if (!requireNamespace("devtools", quietly = TRUE)) {
+  install.packages("devtools")
+}
+
+devtools::install_github("matcasti/CardioCurveR")
 ```
 
-## Example
+## Core Functions
 
-This is a basic example which shows you how to solve a common problem:
+The package provides several key functions:
 
-`r example library(CardioCurveR) ## basic example code`
+### Dual-Logistic Model: `dual_logistic()`
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+This function implements the dual-logistic model from Castillo-Aguilar
+et al. (2025):
+
+$$
+RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda (t-\tau)}} - \frac{c\,\beta}{1 + e^{\phi (t-\tau-\delta)}}
+$$
+
+It takes a vector of time points and a named vector (or list) of
+parameters, returning the modeled RRi values.
+
+### Parameter Estimation: `estimate_RRi_curve()`
+
+This function optimizes the dual-logistic model parameters using a
+robust Huber loss function. The optimization is performed via the
+`optim()` function with box constraints (default method `"L-BFGS-B"`).
+It is designed to yield reliable parameter estimates even in the
+presence of noisy data.
+
+### Signal Filtering: `filter_signal()`
+
+This function applies a Butterworth low-pass filter using zero-phase
+filtering (with `filtfilt()`) to clean the RRi signal. To mitigate edge
+effects from filtering, it trims a specified number of samples from the
+beginning and end of the filtered signal.
+
+### Adaptive Outlier Cleaning: `clean_outlier()`
+
+The `clean_outlier()` function removes ectopic or noisy beats from an
+RRi signal. It fits a LOESS model to capture local trends, calculates
+residuals, and flags outliers based on a robust threshold (multiples of
+the median absolute deviation). Outliers are then replaced by one of
+three methods: drawing from a Gaussian or uniform distribution, or
+simply replacing with the LOESS-predicted values.
+
+## Example Workflow
+
+Below is an extended example that demonstrates the full workflow of
+simulating, filtering, visualizing, and fitting an RRi signal model.
 
 ``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
+library(CardioCurveR)
+
+# Simulate a time vector and a theoretical RRi signal using the dual-logistic model.
+set.seed(123)
+time_vec <- seq(0, 20, by = 0.1)
+
+# Define the true model parameters from Castillo-Aguilar et al. (2025)
+true_params <- list(alpha = 800, beta = -375, c = 0.85, 
+                    lambda = -3, phi = -2, 
+                    tau = 6, delta = 3)
+
+# Compute the theoretical RRi curve using dual_logistic()
+RRi_theoretical <- dual_logistic(time_vec, true_params)
+
+# Visualize the theoretical model
+plot(time_vec, RRi_theoretical, type = "l", col = "blue", lwd = 2,
+     main = "Theoretical Dual-Logistic RRi Model",
+     xlab = "Time (s)", ylab = "RR Interval (ms)")
+grid()
 ```
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this.
+<img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
 
-You can also embed plots, for example:
+``` r
 
-<img src="man/figures/README-pressure-1.png" width="100%" />
+# Simulate a noisy RRi signal by adding Gaussian noise
+RRi_simulated <- RRi_theoretical + rnorm(length(time_vec), sd = 35)
 
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
+# Apply the Butterworth low-pass filter to the noisy RRi signal
+RRi_filtered <- filter_signal(RRi_simulated, n = 3, W = 0.5, abs = 5)
+
+# Plot the simulated signal and its filtered version
+plot(time_vec, RRi_simulated, type = "l", col = "red", lwd = 1,
+     main = "Simulated (Red) vs. Filtered (Blue) RRi Signal",
+     xlab = "Time (s)", ylab = "RR Interval (ms)")
+lines(time_vec, RRi_filtered, col = "blue", lwd = 2)
+grid()
+```
+
+<img src="man/figures/README-unnamed-chunk-2-2.png" width="100%" />
+
+``` r
+
+# Estimate the dual-logistic model parameters from the noisy RRi signal
+fit_summary <- estimate_RRi_curve(time = time_vec, RRi = RRi_simulated)
+print(fit_summary)
+#> $method
+#> [1] "L-BFGS-B"
+#> 
+#> $parameters
+#>        alpha         beta            c       lambda          phi          tau 
+#>  800.3824502 -378.7915112    0.8372124   -3.2515187   -1.9724294    6.0032591 
+#>        delta 
+#>    2.8764451 
+#> 
+#> $objective_value
+#> [1] 103300
+#> 
+#> $convergence
+#> [1] 0
+
+# Overlay the fitted model on the simulated data
+fitted_RRi <- dual_logistic(time_vec, fit_summary$parameters)
+plot(time_vec, RRi_simulated, type = "l", col = "grey", lwd = 1,
+     main = "Simulated RRi Signal with Fitted Model",
+     xlab = "Time (s)", ylab = "RR Interval (ms)")
+lines(time_vec, fitted_RRi, col = "red", lwd = 2)
+grid()
+```
+
+<img src="man/figures/README-unnamed-chunk-2-3.png" width="100%" />
+
+``` r
+
+# For additional insight, plot the residuals from the fitted model
+residuals <- RRi_simulated - fitted_RRi
+plot(time_vec, residuals, type = "l", col = "purple",
+     main = "Residuals of the Fitted Dual-Logistic Model",
+     xlab = "Time (s)", ylab = "Residual (ms)")
+abline(h = 0, lty = 2)
+grid()
+```
+
+<img src="man/figures/README-unnamed-chunk-2-4.png" width="100%" />
+
+The above example demonstrates multiple steps. First, a theoretical RRi
+signal is computed from the dual-logistic model. Next, a noisy version
+of the signal is simulated and then cleaned using a Butterworth low-pass
+filter. The noisy signal is used to estimate the dual-logistic model
+parameters through a robust optimization procedure. Visualizations are
+provided for the theoretical curve, the noisy versus filtered signals,
+the fitted model overlay, and the residuals of the fit, offering
+comprehensive insight into each stage of the process.
+
+Enjoy exploring your RR interval dynamics and modeling them robustly
+with CardioCurveR!
