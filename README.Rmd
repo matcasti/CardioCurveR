@@ -15,12 +15,10 @@ knitr::opts_chunk$set(
 )
 ```
 
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)  
-[![CRAN status](https://www.r-pkg.org/badges/version/CardioCurveR)](https://CRAN.R-project.org/package=CardioCurveR)  
-[![R-CMD-check](https://github.com/matcasti/CardioCurveR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/matcasti/CardioCurveR/actions/workflows/R-CMD-check.yaml)  
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![CRAN status](https://www.r-pkg.org/badges/version/CardioCurveR)](https://CRAN.R-project.org/package=CardioCurveR)
+[![R-CMD-check](https://github.com/matcasti/CardioCurveR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/matcasti/CardioCurveR/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/matcasti/CardioCurveR/graph/badge.svg)](https://app.codecov.io/gh/matcasti/CardioCurveR)
-
-# CardioCurveR: Nonlinear Modeling of R-R Interval Dynamics
 
 CardioCurveR provides an automated and robust framework for modeling RR interval (RRi) signals. The package is built around a dual-logistic model, as described by Castillo-Aguilar et al. (2025), which captures both the rapid drop in RRi during exercise and the subsequent recovery phase. In our formulation, the model is defined by the following equation:
 

@@ -4,14 +4,12 @@ CardioCurveR: Nonlinear Modeling of R-R Interval Dynamics
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)  
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN
-status](https://www.r-pkg.org/badges/version/CardioCurveR)](https://CRAN.R-project.org/package=CardioCurveR)  
-[![R-CMD-check](https://github.com/matcasti/CardioCurveR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/matcasti/CardioCurveR/actions/workflows/R-CMD-check.yaml)  
+status](https://www.r-pkg.org/badges/version/CardioCurveR)](https://CRAN.R-project.org/package=CardioCurveR)
+[![R-CMD-check](https://github.com/matcasti/CardioCurveR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/matcasti/CardioCurveR/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/matcasti/CardioCurveR/graph/badge.svg)](https://app.codecov.io/gh/matcasti/CardioCurveR)
-
-# CardioCurveR: Nonlinear Modeling of R-R Interval Dynamics
 
 CardioCurveR provides an automated and robust framework for modeling RR
 interval (RRi) signals. The package is built around a dual-logistic
