@@ -98,7 +98,7 @@ boot_RRi_parameters <- function(fit = NULL,
 
   # Estimate parameters for each bootstrap replicate using estimate_RRi_curve
   boot_params <- boot_data[
-    j = estimate_RRi_curve(time, RRi)$parameters |> as.list(),
+    j = as.list(x = estimate_RRi_curve(time, RRi)$parameters),
     keyby = "nboot"
   ]
 
