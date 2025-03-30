@@ -106,13 +106,17 @@ RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda (t-\tau)}} - \frac{c\,\beta}{1 + e
 <div class="section level2">
 <h2 id="example-workflow">Example Workflow<a class="anchor" aria-label="anchor" href="#example-workflow"></a>
 </h2>
+<div class="section level3">
+<h3 id="generating-real-life-data">Generating real-life data<a class="anchor" aria-label="anchor" href="#generating-real-life-data"></a>
+</h3>
 <p>Below is an extended example that demonstrates the full workflow of simulating, filtering, visualizing, and fitting an RRi signal model.</p>
+<p>First we load the package <code>CardioCurveR</code>, assuming that you first installed it.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/matcasti/CardioCurveR" class="external-link">CardioCurveR</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Simulate a time vector and a theoretical RRi signal using the dual-logistic model.</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
-<span><span class="va">time_vec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">20</span>, by <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/matcasti/CardioCurveR" class="external-link">CardioCurveR</a></span><span class="op">)</span></span></code></pre></div>
+<p>Then, we simulate data with specific parameters from the dual-logistic model described in Castillo-Aguilar et al. (2025).</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Simulate a time vector and a theoretical RRi signal using the dual-logistic model.</span></span>
+<span><span class="va">time_vec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">20</span>, by <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Define the true model parameters from Castillo-Aguilar et al. (2025)</span></span>
 <span><span class="va">true_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">800</span>, beta <span class="op">=</span> <span class="op">-</span><span class="fl">375</span>, c <span class="op">=</span> <span class="fl">0.85</span>, </span>
@@ -122,31 +126,129 @@ RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda (t-\tau)}} - \frac{c\,\beta}{1 + e
 <span><span class="co"># Compute the theoretical RRi curve using dual_logistic()</span></span>
 <span><span class="va">RRi_theoretical</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/dual_logistic.html">dual_logistic</a></span><span class="op">(</span><span class="va">time_vec</span>, <span class="va">true_params</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># Arrange the generated data and time vector in a single table</span></span>
+<span><span class="va">simulated_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">time_vec</span>, </span>
+<span>                             RRi_theoretical <span class="op">=</span> <span class="va">RRi_theoretical</span><span class="op">)</span></span></code></pre></div>
+<p>And our simulated data will look something like this:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co">#&gt;       time  RRi_theoretical</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; 1        0 799.999999143314</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt; 2     0.01 799.999999067449</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; 3     0.02 799.999998988268</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; ...    ...              ...</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt; 1999 19.98 743.749999907457</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt; 2000 19.99  743.74999990929</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt; 2001    20 743.749999911086</span></span></code></pre></div>
+<p>We can visualize the generated theoretical curve generated with the <code><a href="reference/dual_logistic.html">dual_logistic()</a></code> function by leveraging <code>ggplot2</code> grammar of graphics like this:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span> <span class="co">## Load ggplot2 package</span></span>
+<span></span>
 <span><span class="co"># Visualize the theoretical model</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">time_vec</span>, <span class="va">RRi_theoretical</span>, type <span class="op">=</span> <span class="st">"l"</span>, col <span class="op">=</span> <span class="st">"blue"</span>, lwd <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>     main <span class="op">=</span> <span class="st">"Theoretical Dual-Logistic RRi Model"</span>,</span>
-<span>     xlab <span class="op">=</span> <span class="st">"Time (s)"</span>, ylab <span class="op">=</span> <span class="st">"RR Interval (ms)"</span>, axes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/axis.html" class="external-link">axis</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>;<span class="fu"><a href="https://rdrr.io/r/graphics/axis.html" class="external-link">axis</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-2-1.png" width="100%"></p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">simulated_data</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">RRi_theoretical</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span>, col <span class="op">=</span> <span class="st">"purple"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Theoretical Dual-Logistic RRi Model"</span>,</span>
+<span>       subtitle <span class="op">=</span> <span class="st">"Generated with the `dual_logistic()` function"</span>,</span>
+<span>       x <span class="op">=</span> <span class="st">"Time (min)"</span>, y <span class="op">=</span> <span class="st">"RRi (ms)"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-5-1.png" width="100%"></p>
+<p>We can additionally generate random noise around our theoretical curve to simulate a real R-R interval signal (because life, has randomness in it):</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span> <span class="co"># Seed for reproducibility</span></span>
+<span></span>
 <span><span class="co"># Simulate a noisy RRi signal by adding Gaussian noise</span></span>
-<span><span class="va">RRi_simulated</span> <span class="op">&lt;-</span> <span class="va">RRi_theoretical</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">time_vec</span><span class="op">)</span>, sd <span class="op">=</span> <span class="fl">35</span><span class="op">)</span></span>
+<span><span class="va">simulated_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">within</a></span><span class="op">(</span><span class="va">simulated_data</span>, <span class="op">{</span></span>
+<span>  <span class="va">RRi_simulated</span> <span class="op">&lt;-</span> <span class="va">RRi_theoretical</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span>, sd <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
+<p>So now, we added noise to our perfectly smooth signal, let’s see how does it look now:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">simulated_data</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">RRi_simulated</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">4</span>, col <span class="op">=</span> <span class="st">"purple"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6</span>,<span class="fl">9</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"gray50"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">5.0</span><span class="op">-</span><span class="fl">0.2</span>, y <span class="op">=</span> <span class="fl">500</span>, label <span class="op">=</span> <span class="st">"Rest"</span>, col <span class="op">=</span> <span class="st">"gray50"</span>, </span>
+<span>           hjust <span class="op">=</span> <span class="fl">1</span>, cex <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">7.5</span>, y <span class="op">=</span> <span class="fl">800</span>, label <span class="op">=</span> <span class="st">"Exercise"</span>, col <span class="op">=</span> <span class="st">"gray50"</span>, </span>
+<span>           hjust <span class="op">=</span> <span class="fl">0.5</span>, cex <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">10</span><span class="op">+</span><span class="fl">0.2</span>, y <span class="op">=</span> <span class="fl">500</span>, label <span class="op">=</span> <span class="st">"Recovery"</span>, col <span class="op">=</span> <span class="st">"gray50"</span>, </span>
+<span>           hjust <span class="op">=</span> <span class="fl">0</span>, cex <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Simulated Dual-Logistic RRi Signal"</span>,</span>
+<span>       subtitle <span class="op">=</span> <span class="st">"With Random Gaussian Noise Added"</span>,</span>
+<span>       x <span class="op">=</span> <span class="st">"Time (min)"</span>, y <span class="op">=</span> <span class="st">"RRi (ms)"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-7-1.png" width="100%"></p>
+<p>So as we see, our model also works to generate and simulate data with noise included, which will serve our purpose to illustrate how we can reverse-engineer the noisy RRi signal back to our theoretical curve.</p>
+<p>Let’s first add some ectopic signals to make it look even more real:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span> <span class="co">## Seed for reproducibility</span></span>
 <span></span>
-<span><span class="co"># Apply the Butterworth low-pass filter to the noisy RRi signal</span></span>
-<span><span class="va">RRi_filtered</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/filter_signal.html">filter_signal</a></span><span class="op">(</span><span class="va">RRi_simulated</span><span class="op">)</span></span>
+<span><span class="co">## Total number of RRi records or points</span></span>
+<span><span class="va">n_samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">simulated_data</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Plot the simulated signal and its filtered version</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">time_vec</span>, <span class="va">RRi_simulated</span>, type <span class="op">=</span> <span class="st">"l"</span>, col <span class="op">=</span> <span class="st">"red"</span>, lwd <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>     main <span class="op">=</span> <span class="st">"Simulated (Red) vs. Filtered (Blue) RRi Signal"</span>,</span>
-<span>     xlab <span class="op">=</span> <span class="st">"Time (s)"</span>, ylab <span class="op">=</span> <span class="st">"RR Interval (ms)"</span>, axes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/axis.html" class="external-link">axis</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>;<span class="fu"><a href="https://rdrr.io/r/graphics/axis.html" class="external-link">axis</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">time_vec</span>, <span class="va">RRi_filtered</span>, col <span class="op">=</span> <span class="st">"blue"</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-2-2.png" width="100%"></p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># Estimate the dual-logistic model parameters from the noisy RRi signal</span></span>
-<span><span class="va">fit_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/estimate_RRi_curve.html">estimate_RRi_curve</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">time_vec</span>, RRi <span class="op">=</span> <span class="va">RRi_simulated</span><span class="op">)</span></span>
+<span><span class="co">## We'll select random points (5% of whole signal)</span></span>
+<span><span class="va">ectopics</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample.int</a></span><span class="op">(</span>n <span class="op">=</span> <span class="va">n_samples</span>, size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="va">n_samples</span> <span class="op">*</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## We'll add a doubled or half value to selected ectopic data points</span></span>
+<span><span class="va">simulated_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">within</a></span><span class="op">(</span><span class="va">simulated_data</span>, <span class="op">{</span></span>
+<span>  <span class="va">RRi_simulated</span><span class="op">[</span><span class="va">ectopics</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">RRi_simulated</span><span class="op">[</span><span class="va">ectopics</span><span class="op">]</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">1.7</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
+<p>Now let’s look how looks our noisy, unprocessed signal:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">simulated_data</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">RRi_simulated</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">4</span>, col <span class="op">=</span> <span class="st">"purple"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6</span>,<span class="fl">9</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"gray50"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">5.0</span><span class="op">-</span><span class="fl">0.2</span>, y <span class="op">=</span> <span class="fl">500</span>, label <span class="op">=</span> <span class="st">"Rest"</span>, col <span class="op">=</span> <span class="st">"gray50"</span>, </span>
+<span>           hjust <span class="op">=</span> <span class="fl">1</span>, cex <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">7.5</span>, y <span class="op">=</span> <span class="fl">800</span>, label <span class="op">=</span> <span class="st">"Exercise"</span>, col <span class="op">=</span> <span class="st">"gray50"</span>, </span>
+<span>           hjust <span class="op">=</span> <span class="fl">0.5</span>, cex <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, x <span class="op">=</span> <span class="fl">10</span><span class="op">+</span><span class="fl">0.2</span>, y <span class="op">=</span> <span class="fl">500</span>, label <span class="op">=</span> <span class="st">"Recovery"</span>, col <span class="op">=</span> <span class="st">"gray50"</span>, </span>
+<span>           hjust <span class="op">=</span> <span class="fl">0</span>, cex <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Simulated Dual-Logistic RRi Signal"</span>,</span>
+<span>       subtitle <span class="op">=</span> <span class="st">"With Random Noise and Ectopic Heartbeats Added"</span>,</span>
+<span>       x <span class="op">=</span> <span class="st">"Time (min)"</span>, y <span class="op">=</span> <span class="st">"RRi (ms)"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-9-1.png" width="100%"></p>
+<p>Okay so now this look like real-life signal data. Now the question lies: Can we reverse-engineer this curve back to our nice and smooth theoretical curve? That’s exactly the goal to this package. Let’s see what can we do!</p>
+</div>
+<div class="section level3">
+<h3 id="cleaning-the-rri-data">Cleaning the RRi data<a class="anchor" aria-label="anchor" href="#cleaning-the-rri-data"></a>
+</h3>
+<p>First, we need to remove ectopic signals. We can do this with our <code><a href="reference/clean_outlier.html">clean_outlier()</a></code> function like this:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## First we call our function</span></span>
+<span><span class="va">cleaned_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">simulated_data</span>, <span class="fu"><a href="reference/clean_outlier.html">clean_outlier</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">RRi_simulated</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## And them, add the cleaned signal to our original table as another column</span></span>
+<span><span class="va">simulated_data</span><span class="op">$</span><span class="va">RRi_cleaned</span> <span class="op">&lt;-</span> <span class="va">cleaned_data</span><span class="op">$</span><span class="va">signal</span></span></code></pre></div>
+<p>So now, let’s check how it looks our cleaned signal (without ectopic hearbeats):</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">simulated_data</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">time</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">RRi_simulated</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">4</span>, col <span class="op">=</span> <span class="st">"purple"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">RRi_cleaned</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">4</span>, col <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Simulated Dual-Logistic RRi Signal"</span>,</span>
+<span>       subtitle <span class="op">=</span> <span class="st">"Original (Purple) and Cleaned Signal (Blue)"</span>,</span>
+<span>       x <span class="op">=</span> <span class="st">"Time (min)"</span>, y <span class="op">=</span> <span class="st">"RRi (ms)"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-11-1.png" width="100%"></p>
+<p>Additionally, we can now filter the noise we add initially (the random gaussian noise) to clean even more our RRi signal. Let’s see how it looks our RRi signal after filtering:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Apply the Butterworth low-pass filter to the noisy RRi signal</span></span>
+<span><span class="va">simulated_data</span><span class="op">$</span><span class="va">RRi_filtered</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">simulated_data</span>, <span class="fu"><a href="reference/filter_signal.html">filter_signal</a></span><span class="op">(</span><span class="va">RRi_cleaned</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">simulated_data</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">time</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">RRi_cleaned</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">4</span>, col <span class="op">=</span> <span class="st">"purple"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">RRi_filtered</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">4</span>, col <span class="op">=</span> <span class="st">"blue"</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Simulated Dual-Logistic RRi Signal"</span>,</span>
+<span>       subtitle <span class="op">=</span> <span class="st">"Cleaned signal (Purple) and Cleaned and Filtered Signal (Blue)"</span>,</span>
+<span>       x <span class="op">=</span> <span class="st">"Time (min)"</span>, y <span class="op">=</span> <span class="st">"RRi (ms)"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-12-1.png" width="100%"></p>
+<p>With this filtered signal we can now focus on capturing the true underlying theoretical curve rather than just capturing the noise from the measurements.</p>
+</div>
+<div class="section level3">
+<h3 id="estimating-the-rri-model">Estimating the RRi model<a class="anchor" aria-label="anchor" href="#estimating-the-rri-model"></a>
+</h3>
+<p>The estimation process of the original curve is rather simple: we call the function <code><a href="reference/estimate_RRi_curve.html">estimate_RRi_curve()</a></code> and plug the time and RRi vectors inside.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Estimate the dual-logistic model parameters from the noisy RRi signal</span></span>
+<span><span class="va">fit_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">simulated_data</span>, <span class="fu"><a href="reference/estimate_RRi_curve.html">estimate_RRi_curve</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">RRi_filtered</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Lets print the results of the estimation of our model parameters</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">fit_summary</span><span class="op">)</span></span>
@@ -154,36 +256,55 @@ RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda (t-\tau)}} - \frac{c\,\beta}{1 + e
 <span><span class="co">#&gt; Optimization Method: L-BFGS-B </span></span>
 <span><span class="co">#&gt; Estimated Parameters:</span></span>
 <span><span class="co">#&gt;        alpha         beta            c       lambda          phi          tau </span></span>
-<span><span class="co">#&gt;  803.1184916 -397.5127654    0.8542077   -2.7167717   -1.7694993    5.9969601 </span></span>
+<span><span class="co">#&gt;  800.3187317 -379.8993874    0.8606058   -2.9594002   -1.8927805    5.9759377 </span></span>
 <span><span class="co">#&gt;        delta </span></span>
-<span><span class="co">#&gt;    2.9302810 </span></span>
-<span><span class="co">#&gt; Objective Value (Huber loss): 217118.3 </span></span>
-<span><span class="co">#&gt; Convergence Code: 0</span></span>
-<span></span>
-<span><span class="co">## Now lets see a summary with model fit statistics</span></span>
+<span><span class="co">#&gt;    3.0115352 </span></span>
+<span><span class="co">#&gt; Objective Value (Huber loss): 921733.7 </span></span>
+<span><span class="co">#&gt; Convergence Code: 0</span></span></code></pre></div>
+<p>And as simple as that we have fitted the dual logistic model to our processed data. Let’s explore how well our model captured the pattern from the generated data. We can further use other base functions to explore the resulting object.</p>
+<p>For instance, let’s call the <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> function to our object:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Now lets see a summary with model fit statistics</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit_summary</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Summary of RRi_fit Object</span></span>
 <span><span class="co">#&gt; Optimization Method: L-BFGS-B </span></span>
 <span><span class="co">#&gt; Estimated Parameters:</span></span>
 <span><span class="co">#&gt;        alpha         beta            c       lambda          phi          tau </span></span>
-<span><span class="co">#&gt;  803.1184916 -397.5127654    0.8542077   -2.7167717   -1.7694993    5.9969601 </span></span>
+<span><span class="co">#&gt;  800.3187317 -379.8993874    0.8606058   -2.9594002   -1.8927805    5.9759377 </span></span>
 <span><span class="co">#&gt;        delta </span></span>
-<span><span class="co">#&gt;    2.9302810 </span></span>
+<span><span class="co">#&gt;    3.0115352 </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Objective Value (Huber loss): 217118.3 </span></span>
-<span><span class="co">#&gt; Residual Sum of Squares (RSS): 455980.6 </span></span>
-<span><span class="co">#&gt; Total Sum of Squares (TSS): 4702302 </span></span>
-<span><span class="co">#&gt; R-squared: 0.903 </span></span>
-<span><span class="co">#&gt; Root Mean Squared Error (RMSE): 33.7  ms </span></span>
-<span><span class="co">#&gt; Mean Absolute Percentage Error (MAPE): 3.9  % </span></span>
-<span><span class="co">#&gt; Number of observations: 401 </span></span>
-<span><span class="co">#&gt; Convergence Code: 0</span></span>
-<span></span>
-<span><span class="co">## Finally, lets see a plot with diagnostics statistics</span></span>
+<span><span class="co">#&gt; Objective Value (Huber loss): 921733.7 </span></span>
+<span><span class="co">#&gt; Residual Sum of Squares (RSS): 1902518 </span></span>
+<span><span class="co">#&gt; Total Sum of Squares (TSS): 23025287 </span></span>
+<span><span class="co">#&gt; R-squared: 0.9174 </span></span>
+<span><span class="co">#&gt; Root Mean Squared Error (RMSE): 30.9  ms </span></span>
+<span><span class="co">#&gt; Mean Absolute Percentage Error (MAPE): 3.6  % </span></span>
+<span><span class="co">#&gt; Number of observations: 1991 </span></span>
+<span><span class="co">#&gt; Convergence Code: 0</span></span></code></pre></div>
+<p>We can see that the model have an <code>R-squared</code> of 0.917, which means that is explaining about 91.7% of the variance contained in the generated RRi signal (considering that we start with really messy and noisy RRi data). The <code>RMSE</code> indicates that the average error of the model is only about 30 ms, which is equivalent to an error of 3.6 % according to the <code>MAPE</code>.</p>
+<p>We can see plot model diagnostics using the <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> function. Let’s see the result:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Finally, lets see a plot with diagnostics statistics</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit_summary</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-2-3.png" width="100%"></p>
-<p>The above example demonstrates multiple steps. First, a theoretical RRi signal is computed from the dual-logistic model. Next, a noisy version of the signal is simulated and then cleaned using a Butterworth low-pass filter. The noisy signal is used to estimate the dual-logistic model parameters through a robust optimization procedure. Visualizations are provided for the theoretical curve, the noisy versus filtered signals, the fitted model overlay, and the residuals of the fit, offering comprehensive insight into each stage of the process.</p>
+<p><img src="reference/figures/README-unnamed-chunk-15-1.png" width="100%"></p>
+<p>The above plot should show the predicted RRi line (blue) closely following the RRi signal. The middle plot should show that the residuals of the model are evenly spread around the zero line. This is further observed by the histogram of residuals which should be normally distribuited around zero.</p>
+<p>Let’s see how well our model did compared to the true underlying curve that we used to generate the data!</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Add the simulated curve from the estimated parameters</span></span>
+<span><span class="va">simulated_data</span><span class="op">$</span><span class="va">RRi_estimated</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/dual_logistic.html">dual_logistic</a></span><span class="op">(</span><span class="va">time_vec</span>, <span class="va">fit_summary</span><span class="op">$</span><span class="va">parameters</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">simulated_data</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">RRi_theoretical</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span>, col <span class="op">=</span> <span class="st">"purple"</span>, linetype <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">RRi_estimated</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span>, col <span class="op">=</span> <span class="st">"blue"</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"True (Purple) and Estimated (Blue) RRi Model"</span>,</span>
+<span>       y <span class="op">=</span> <span class="st">"RRi (ms)"</span>, x <span class="op">=</span> <span class="st">"Time (min)"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-16-1.png" width="100%"></p>
+<p>We can see that our model did a fairly well job capturing the underlying true curve, which demonstrate our model’s capabilities in capturing the RRi dynamics in response to exercise when this double-logistic behavior is inherently present.</p>
+<p>The above example demonstrates multiple steps. First, a theoretical RRi signal is computed from the dual-logistic model. Next, a noisy version of the signal is simulated and then cleaned using a Butterworth low-pass filter. The cleaned signal is used to estimate the dual-logistic model parameters through a robust optimization procedure. Visualizations are provided for the theoretical curve, the noisy versus filtered signals, the fitted model overlay, and the residuals of the fit, offering comprehensive insight into each stage of the process.</p>
 <p>Enjoy exploring your RR interval dynamics and modeling them robustly with CardioCurveR!</p>
+</div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
