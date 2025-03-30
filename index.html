@@ -112,7 +112,7 @@ RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda (t-\tau)}} - \frac{c\,\beta}{1 + e
 <span></span>
 <span><span class="co"># Simulate a time vector and a theoretical RRi signal using the dual-logistic model.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
-<span><span class="va">time_vec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">20</span>, by <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
+<span><span class="va">time_vec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">20</span>, by <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Define the true model parameters from Castillo-Aguilar et al. (2025)</span></span>
 <span><span class="va">true_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">800</span>, beta <span class="op">=</span> <span class="op">-</span><span class="fl">375</span>, c <span class="op">=</span> <span class="fl">0.85</span>, </span>
@@ -134,7 +134,7 @@ RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda (t-\tau)}} - \frac{c\,\beta}{1 + e
 <span><span class="va">RRi_simulated</span> <span class="op">&lt;-</span> <span class="va">RRi_theoretical</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">time_vec</span><span class="op">)</span>, sd <span class="op">=</span> <span class="fl">35</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Apply the Butterworth low-pass filter to the noisy RRi signal</span></span>
-<span><span class="va">RRi_filtered</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/filter_signal.html">filter_signal</a></span><span class="op">(</span><span class="va">RRi_simulated</span>, n <span class="op">=</span> <span class="fl">3</span>, W <span class="op">=</span> <span class="fl">0.5</span>, abs <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">RRi_filtered</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/filter_signal.html">filter_signal</a></span><span class="op">(</span><span class="va">RRi_simulated</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Plot the simulated signal and its filtered version</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">time_vec</span>, <span class="va">RRi_simulated</span>, type <span class="op">=</span> <span class="st">"l"</span>, col <span class="op">=</span> <span class="st">"red"</span>, lwd <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -147,40 +147,41 @@ RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda (t-\tau)}} - \frac{c\,\beta}{1 + e
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Estimate the dual-logistic model parameters from the noisy RRi signal</span></span>
 <span><span class="va">fit_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/estimate_RRi_curve.html">estimate_RRi_curve</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">time_vec</span>, RRi <span class="op">=</span> <span class="va">RRi_simulated</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">fit_summary</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $method</span></span>
-<span><span class="co">#&gt; [1] "L-BFGS-B"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $parameters</span></span>
-<span><span class="co">#&gt;        alpha         beta            c       lambda          phi          tau </span></span>
-<span><span class="co">#&gt;  800.5394360 -371.2615984    0.8513614   -3.1655726   -1.9580225    5.9710957 </span></span>
-<span><span class="co">#&gt;        delta </span></span>
-<span><span class="co">#&gt;    3.0396702 </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $objective_value</span></span>
-<span><span class="co">#&gt; [1] 1158735</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $convergence</span></span>
-<span><span class="co">#&gt; [1] 0</span></span>
 <span></span>
-<span><span class="co"># Overlay the fitted model on the simulated data</span></span>
-<span><span class="va">fitted_RRi</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/dual_logistic.html">dual_logistic</a></span><span class="op">(</span><span class="va">time_vec</span>, <span class="va">fit_summary</span><span class="op">$</span><span class="va">parameters</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">time_vec</span>, <span class="va">RRi_simulated</span>, type <span class="op">=</span> <span class="st">"l"</span>, col <span class="op">=</span> <span class="st">"grey"</span>, lwd <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>     main <span class="op">=</span> <span class="st">"Simulated RRi Signal with Fitted Model"</span>,</span>
-<span>     xlab <span class="op">=</span> <span class="st">"Time (s)"</span>, ylab <span class="op">=</span> <span class="st">"RR Interval (ms)"</span>, axes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/axis.html" class="external-link">axis</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>;<span class="fu"><a href="https://rdrr.io/r/graphics/axis.html" class="external-link">axis</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">time_vec</span>, <span class="va">fitted_RRi</span>, col <span class="op">=</span> <span class="st">"red"</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">## Lets print the results of the estimation of our model parameters</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">fit_summary</span><span class="op">)</span></span>
+<span><span class="co">#&gt; RRi_fit Object</span></span>
+<span><span class="co">#&gt; Optimization Method: L-BFGS-B </span></span>
+<span><span class="co">#&gt; Estimated Parameters:</span></span>
+<span><span class="co">#&gt;        alpha         beta            c       lambda          phi          tau </span></span>
+<span><span class="co">#&gt;  803.1184916 -397.5127654    0.8542077   -2.7167717   -1.7694993    5.9969601 </span></span>
+<span><span class="co">#&gt;        delta </span></span>
+<span><span class="co">#&gt;    2.9302810 </span></span>
+<span><span class="co">#&gt; Objective Value (Huber loss): 217118.3 </span></span>
+<span><span class="co">#&gt; Convergence Code: 0</span></span>
+<span></span>
+<span><span class="co">## Now lets see a summary with model fit statistics</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit_summary</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Summary of RRi_fit Object</span></span>
+<span><span class="co">#&gt; Optimization Method: L-BFGS-B </span></span>
+<span><span class="co">#&gt; Estimated Parameters:</span></span>
+<span><span class="co">#&gt;        alpha         beta            c       lambda          phi          tau </span></span>
+<span><span class="co">#&gt;  803.1184916 -397.5127654    0.8542077   -2.7167717   -1.7694993    5.9969601 </span></span>
+<span><span class="co">#&gt;        delta </span></span>
+<span><span class="co">#&gt;    2.9302810 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Objective Value (Huber loss): 217118.3 </span></span>
+<span><span class="co">#&gt; Residual Sum of Squares (RSS): 455980.6 </span></span>
+<span><span class="co">#&gt; Total Sum of Squares (TSS): 4702302 </span></span>
+<span><span class="co">#&gt; R-squared: 0.903 </span></span>
+<span><span class="co">#&gt; Root Mean Squared Error (RMSE): 33.7  ms </span></span>
+<span><span class="co">#&gt; Mean Absolute Percentage Error (MAPE): 3.9  % </span></span>
+<span><span class="co">#&gt; Number of observations: 401 </span></span>
+<span><span class="co">#&gt; Convergence Code: 0</span></span>
+<span></span>
+<span><span class="co">## Finally, lets see a plot with diagnostics statistics</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit_summary</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-2-3.png" width="100%"></p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># For additional insight, plot the residuals from the fitted model</span></span>
-<span><span class="va">residuals</span> <span class="op">&lt;-</span> <span class="va">RRi_simulated</span> <span class="op">-</span> <span class="va">fitted_RRi</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">time_vec</span>, <span class="va">residuals</span>, type <span class="op">=</span> <span class="st">"l"</span>, col <span class="op">=</span> <span class="st">"purple"</span>,</span>
-<span>     main <span class="op">=</span> <span class="st">"Residuals of the Fitted Dual-Logistic Model"</span>,</span>
-<span>     xlab <span class="op">=</span> <span class="st">"Time (s)"</span>, ylab <span class="op">=</span> <span class="st">"Residual (ms)"</span>, axes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/axis.html" class="external-link">axis</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>;<span class="fu"><a href="https://rdrr.io/r/graphics/axis.html" class="external-link">axis</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fl">0</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-2-4.png" width="100%"></p>
 <p>The above example demonstrates multiple steps. First, a theoretical RRi signal is computed from the dual-logistic model. Next, a noisy version of the signal is simulated and then cleaned using a Butterworth low-pass filter. The noisy signal is used to estimate the dual-logistic model parameters through a robust optimization procedure. Visualizations are provided for the theoretical curve, the noisy versus filtered signals, the fitted model overlay, and the residuals of the fit, offering comprehensive insight into each stage of the process.</p>
 <p>Enjoy exploring your RR interval dynamics and modeling them robustly with CardioCurveR!</p>
 </div>
