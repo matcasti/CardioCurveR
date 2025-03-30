@@ -7,3 +7,24 @@ template:
       <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
       <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
 
+reference:
+  - title: "About the Package"
+    contents:
+      - "CardioCurveR"
+  - title: "Core Modeling Functions"
+    contents:
+      - matches("^dual_logistic$")
+      - matches("^estimate_RRi_curve$")
+  - title: "Signal Preprocessing"
+    contents:
+      - matches("^filter_signal$")
+      - matches("^clean_outlier$")
+  - title: "Bootstrap Analysis"
+    contents:
+      - matches("^boot_RRi_parameters$")
+  - title: "Simulated Data"
+    contents:
+      - matches("^sim_RRi$")
+  - title: "S3 Methods for Model Output"
+    contents:
+      - matches("^(print|summary|plot)\\.")

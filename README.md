@@ -108,7 +108,7 @@ model described in Castillo-Aguilar et al. (2025).
 
 ``` r
 # Simulate a time vector and a theoretical RRi signal using the dual-logistic model.
-time_vec <- seq(0, 20, by = 0.01)
+time <- seq(0, 20, by = 0.01)
 
 # Define the true model parameters from Castillo-Aguilar et al. (2025)
 true_params <- list(alpha = 800, beta = -375, c = 0.85, 
@@ -116,11 +116,7 @@ true_params <- list(alpha = 800, beta = -375, c = 0.85,
                     tau = 6, delta = 3)
 
 # Compute the theoretical RRi curve using dual_logistic()
-RRi_theoretical <- dual_logistic(time_vec, true_params)
-
-# Arrange the generated data and time vector in a single table
-simulated_data <- data.frame(time = time_vec, 
-                             RRi_theoretical = RRi_theoretical)
+RRi_theoretical <- dual_logistic(time, true_params)
 ```
 
 And our simulated data will look something like this:
@@ -142,15 +138,15 @@ like this:
 library(ggplot2) ## Load ggplot2 package
 
 # Visualize the theoretical model
-ggplot(simulated_data, aes(time, RRi_theoretical)) +
-  geom_line(linewidth = 1, col = "purple") +
+ggplot() +
+  geom_line(aes(time, RRi_theoretical), linewidth = 1, col = "purple") +
   labs(title = "Theoretical Dual-Logistic RRi Model",
        subtitle = "Generated with the `dual_logistic()` function",
        x = "Time (min)", y = "RRi (ms)") +
   theme_minimal()
 ```
 
-<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-5-1.svg" width="100%" />
 
 We can additionally generate random noise around our theoretical curve
 to simulate a real R-R interval signal (because life, has randomness in
@@ -160,17 +156,15 @@ it):
 set.seed(123) # Seed for reproducibility
 
 # Simulate a noisy RRi signal by adding Gaussian noise
-simulated_data <- within(simulated_data, {
-  RRi_simulated <- RRi_theoretical + rnorm(length(time), sd = 50)
-})
+RRi_simulated <- RRi_theoretical + rnorm(length(time), sd = 50)
 ```
 
 So now, we added noise to our perfectly smooth signal, let’s see how
 does it look now:
 
 ``` r
-ggplot(simulated_data, aes(time, RRi_simulated)) +
-  geom_line(linewidth = 1/4, col = "purple") +
+ggplot() +
+  geom_line(aes(time, RRi_simulated), linewidth = 1/4, col = "purple") +
   geom_vline(xintercept = c(6,9), linetype = 2, col = "gray50") +
   annotate("text", x = 5.0-0.2, y = 500, label = "Rest", col = "gray50", 
            hjust = 1, cex = 3) +
@@ -184,7 +178,7 @@ ggplot(simulated_data, aes(time, RRi_simulated)) +
   theme_minimal()
 ```
 
-<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-7-1.svg" width="100%" />
 
 So as we see, our model also works to generate and simulate data with
 noise included, which will serve our purpose to illustrate how we can
@@ -196,22 +190,20 @@ Let’s first add some ectopic signals to make it look even more real:
 set.seed(1234) ## Seed for reproducibility
 
 ## Total number of RRi records or points
-n_samples <- nrow(simulated_data)
+n_samples <- length(time)
 
 ## We'll select random points (5% of whole signal)
 ectopics <- sample.int(n = n_samples, size = floor(n_samples * 0.05))
 
 ## We'll add a doubled or half value to selected ectopic data points
-simulated_data <- within(simulated_data, {
-  RRi_simulated[ectopics] <- RRi_simulated[ectopics] * c(0.3, 1.7)
-})
+RRi_simulated[ectopics] <- RRi_simulated[ectopics] * c(0.3, 1.7)
 ```
 
 Now let’s look how looks our noisy, unprocessed signal:
 
 ``` r
-ggplot(simulated_data, aes(time, RRi_simulated)) +
-  geom_line(linewidth = 1/4, col = "purple") +
+ggplot() +
+  geom_line(aes(time, RRi_simulated), linewidth = 1/4, col = "purple") +
   geom_vline(xintercept = c(6,9), linetype = 2, col = "gray50") +
   annotate("text", x = 5.0-0.2, y = 500, label = "Rest", col = "gray50", 
            hjust = 1, cex = 3) +
@@ -225,7 +217,11 @@ ggplot(simulated_data, aes(time, RRi_simulated)) +
   theme_minimal()
 ```
 
-<img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-9-1.svg" width="100%" />
+
+(Fun fact, you can find this example dataset so you can practice by
+calling the object `sim_RRi`, check out its documentations here:
+`?sim_RRi`).
 
 Okay so now this look like real-life signal data. Now the question lies:
 Can we reverse-engineer this curve back to our nice and smooth
@@ -239,26 +235,26 @@ First, we need to remove ectopic signals. We can do this with our
 
 ``` r
 ## First we call our function
-cleaned_data <- with(simulated_data, clean_outlier(time, RRi_simulated))
+cleaned_data <- clean_outlier(time, RRi_simulated)
 
 ## And them, add the cleaned signal to our original table as another column
-simulated_data$RRi_cleaned <- cleaned_data$signal
+RRi_cleaned <- cleaned_data$signal
 ```
 
 So now, let’s check how it looks our cleaned signal (without ectopic
 hearbeats):
 
 ``` r
-ggplot(simulated_data, aes(x = time)) +
-  geom_line(aes(y = RRi_simulated), linewidth = 1/4, col = "purple") +
-  geom_line(aes(y = RRi_cleaned), linewidth = 1/4, col = "blue") +
+ggplot() +
+  geom_line(aes(time, RRi_simulated), linewidth = 1/4, col = "purple") +
+  geom_line(aes(time, RRi_cleaned), linewidth = 1/4, col = "blue") +
   labs(title = "Simulated Dual-Logistic RRi Signal",
        subtitle = "Original (Purple) and Cleaned Signal (Blue)",
        x = "Time (min)", y = "RRi (ms)") +
   theme_minimal()
 ```
 
-<img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-11-1.svg" width="100%" />
 
 Additionally, we can now filter the noise we add initially (the random
 gaussian noise) to clean even more our RRi signal. Let’s see how it
@@ -266,18 +262,18 @@ looks our RRi signal after filtering:
 
 ``` r
 # Apply the Butterworth low-pass filter to the noisy RRi signal
-simulated_data$RRi_filtered <- with(simulated_data, filter_signal(RRi_cleaned))
+RRi_filtered <- filter_signal(RRi_cleaned)
 
-ggplot(simulated_data, aes(x = time)) +
-  geom_line(aes(y = RRi_cleaned), linewidth = 1/4, col = "purple") +
-  geom_line(aes(y = RRi_filtered), linewidth = 1/4, col = "blue", na.rm = TRUE) +
+ggplot() +
+  geom_line(aes(time, RRi_cleaned), linewidth = 1/4, col = "purple") +
+  geom_line(aes(time, RRi_filtered), linewidth = 1/4, col = "blue", na.rm = TRUE) +
   labs(title = "Simulated Dual-Logistic RRi Signal",
        subtitle = "Cleaned signal (Purple) and Cleaned and Filtered Signal (Blue)",
        x = "Time (min)", y = "RRi (ms)") +
   theme_minimal()
 ```
 
-<img src="man/figures/README-unnamed-chunk-12-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-12-1.svg" width="100%" />
 
 With this filtered signal we can now focus on capturing the true
 underlying theoretical curve rather than just capturing the noise from
@@ -291,7 +287,7 @@ inside.
 
 ``` r
 # Estimate the dual-logistic model parameters from the noisy RRi signal
-fit_summary <- with(simulated_data, estimate_RRi_curve(time, RRi_filtered))
+fit_summary <- estimate_RRi_curve(time, RRi_filtered)
 
 ## Lets print the results of the estimation of our model parameters
 print(fit_summary)
@@ -348,7 +344,7 @@ the result:
 plot(fit_summary)
 ```
 
-<img src="man/figures/README-unnamed-chunk-15-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-15-1.svg" width="100%" />
 
 The above plot should show the predicted RRi line (blue) closely
 following the RRi signal. The middle plot should show that the residuals
@@ -361,17 +357,17 @@ that we used to generate the data!
 
 ``` r
 ## Add the simulated curve from the estimated parameters
-simulated_data$RRi_estimated <- dual_logistic(time_vec, fit_summary$parameters)
+RRi_estimated <- dual_logistic(time, fit_summary$parameters)
 
-ggplot(simulated_data, aes(time)) +
-  geom_line(aes(y = RRi_theoretical), linewidth = 1/2, col = "purple", linetype = 1) +
-  geom_line(aes(y = RRi_estimated), linewidth = 1/2, col = "blue", linetype = 2) +
+ggplot() +
+  geom_line(aes(time, RRi_theoretical), linewidth = 1/2, col = "purple", linetype = 1) +
+  geom_line(aes(time, RRi_estimated), linewidth = 1/2, col = "blue", linetype = 2) +
   labs(title = "True (Purple) and Estimated (Blue) RRi Model",
        y = "RRi (ms)", x = "Time (min)") +
   theme_minimal()
 ```
 
-<img src="man/figures/README-unnamed-chunk-16-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-16-1.svg" width="100%" />
 
 We can see that our model did a fairly well job capturing the underlying
 true curve, which demonstrate our model’s capabilities in capturing the

@@ -103,14 +103,14 @@ plot.RRi_fit <- function(x, ...) {
   df$residuals <- df$RRi - df$fitted
 
   p1 <- ggplot2::ggplot(df, ggplot2::aes(x = time)) +
-    ggplot2::geom_line(ggplot2::aes(y = RRi), color = "purple", size = 1/2) +
-    ggplot2::geom_line(ggplot2::aes(y = fitted), color = "blue", size = 1) +
+    ggplot2::geom_line(ggplot2::aes(y = RRi), color = "purple", linewidth = 1/2) +
+    ggplot2::geom_line(ggplot2::aes(y = fitted), color = "blue", linewidth = 1) +
     ggplot2::labs(title = "Observed RRi and Fitted Dual-Logistic Model",
                   x = "Time", y = "RR Interval (ms)") +
     ggplot2::theme_minimal()
 
   p2 <- ggplot2::ggplot(df, ggplot2::aes(x = time, y = residuals)) +
-    ggplot2::geom_line(color = "purple", size = 1/2) +
+    ggplot2::geom_line(color = "purple", linewidth = 1/2) +
     ggplot2::geom_hline(ggplot2::aes(yintercept = 0), linetype = "dashed") +
     ggplot2::labs(title = "Residuals vs. Time",
                   x = "Time", y = "Residuals (ms)") +
