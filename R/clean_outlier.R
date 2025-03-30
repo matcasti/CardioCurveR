@@ -15,8 +15,8 @@
 #'   \item{\code{"loess"}}{Simply replace ectopic values with the LOESS-predicted values.}
 #' }
 #'
-#' This adaptive approach ensures that dynamic changes in the RRi signal—such as those observed during
-#' exercise—are preserved, while ectopic or spurious beats are corrected without "chopping" the data.
+#' This adaptive approach ensures that dynamic changes in the RRi signal, such as those observed during
+#' exercise, are preserved, while ectopic or spurious beats are corrected without "chopping" the data.
 #'
 #' @param time A numeric vector of time points corresponding to the RRi recordings.
 #' @param signal A numeric vector of RR interval (RRi) values.

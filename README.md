@@ -13,10 +13,11 @@ coverage](https://codecov.io/gh/matcasti/CardioCurveR/graph/badge.svg)](https://
 
 CardioCurveR provides an automated and robust framework for modeling RR
 interval (RRi) signals. The package is built around a dual-logistic
-model, as described by Castillo-Aguilar et al. (2025), which captures
-both the rapid drop in RRi during exercise and the subsequent recovery
-phase. In our formulation, the model is defined by the following
-equation:
+model, as described by [Castillo-Aguilar et
+al. (2025)](https://www.nature.com/articles/s41598-025-93654-6), which
+captures both the rapid drop in RRi during exercise and the subsequent
+recovery phase. In our formulation, the model is defined by the
+following equation:
 
 $$
 RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda\ (t-\tau)}} - 
@@ -55,8 +56,8 @@ The package provides several key functions:
 
 ### Dual-Logistic Model: `dual_logistic()`
 
-This function implements the dual-logistic model from Castillo-Aguilar
-et al. (2025):
+This function implements the dual-logistic model from [Castillo-Aguilar
+et al. (2025)](https://www.nature.com/articles/s41598-025-93654-6):
 
 $$
 RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda (t-\tau)}} - \frac{c\,\beta}{1 + e^{\phi (t-\tau-\delta)}}
