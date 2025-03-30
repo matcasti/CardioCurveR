@@ -10,7 +10,7 @@ test_that("estimate_RRi_curve runs correctly on simulated data", {
   fit <- estimate_RRi_curve(time = time_vec, RRi = RRi_simulated)
 
   expect_type(fit, "list")
-  expect_named(fit, c("method", "parameters", "objective_value", "convergence"))
+  expect_named(fit, c("data", "method", "parameters", "objective_value", "convergence"))
   expect_length(fit$parameters, length(true_params))
   expect_true(fit$convergence == 0)  # Check if optimization converged
 })

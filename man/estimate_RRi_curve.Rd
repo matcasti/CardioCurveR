@@ -26,6 +26,8 @@ The default is \code{"L-BFGS-B"}, which allows for parameter constraints.}
 \value{
 A list containing:
 \describe{
+\item{data}{The input data (after removing missing cases) and fitted values
+from the dual logistic model.}
 \item{method}{The optimization method used.}
 \item{parameters}{The estimated parameters from the model.}
 \item{objective_value}{The final value of the objective (Huber loss) function.}

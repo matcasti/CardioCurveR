@@ -99,7 +99,7 @@ library(CardioCurveR)
 
 # Simulate a time vector and a theoretical RRi signal using the dual-logistic model.
 set.seed(123)
-time_vec <- seq(0, 20, by = 0.01)
+time_vec <- seq(0, 20, by = 0.05)
 
 # Define the true model parameters from Castillo-Aguilar et al. (2025)
 true_params <- list(alpha = 800, beta = -375, c = 0.85, 
@@ -124,7 +124,7 @@ axis(1);axis(2)
 RRi_simulated <- RRi_theoretical + rnorm(length(time_vec), sd = 35)
 
 # Apply the Butterworth low-pass filter to the noisy RRi signal
-RRi_filtered <- filter_signal(RRi_simulated, n = 3, W = 0.5, abs = 5)
+RRi_filtered <- filter_signal(RRi_simulated)
 
 # Plot the simulated signal and its filtered version
 plot(time_vec, RRi_simulated, type = "l", col = "red", lwd = 1,
@@ -140,45 +140,43 @@ lines(time_vec, RRi_filtered, col = "blue", lwd = 2)
 
 # Estimate the dual-logistic model parameters from the noisy RRi signal
 fit_summary <- estimate_RRi_curve(time = time_vec, RRi = RRi_simulated)
-print(fit_summary)
-#> $method
-#> [1] "L-BFGS-B"
-#> 
-#> $parameters
-#>        alpha         beta            c       lambda          phi          tau 
-#>  800.5394360 -371.2615984    0.8513614   -3.1655726   -1.9580225    5.9710957 
-#>        delta 
-#>    3.0396702 
-#> 
-#> $objective_value
-#> [1] 1158735
-#> 
-#> $convergence
-#> [1] 0
 
-# Overlay the fitted model on the simulated data
-fitted_RRi <- dual_logistic(time_vec, fit_summary$parameters)
-plot(time_vec, RRi_simulated, type = "l", col = "grey", lwd = 1,
-     main = "Simulated RRi Signal with Fitted Model",
-     xlab = "Time (s)", ylab = "RR Interval (ms)", axes = FALSE)
-axis(1);axis(2)
-lines(time_vec, fitted_RRi, col = "red", lwd = 2)
+## Lets print the results of the estimation of our model parameters
+print(fit_summary)
+#> RRi_fit Object
+#> Optimization Method: L-BFGS-B 
+#> Estimated Parameters:
+#>        alpha         beta            c       lambda          phi          tau 
+#>  803.1184916 -397.5127654    0.8542077   -2.7167717   -1.7694993    5.9969601 
+#>        delta 
+#>    2.9302810 
+#> Objective Value (Huber loss): 217118.3 
+#> Convergence Code: 0
+
+## Now lets see a summary with model fit statistics
+summary(fit_summary)
+#> Summary of RRi_fit Object
+#> Optimization Method: L-BFGS-B 
+#> Estimated Parameters:
+#>        alpha         beta            c       lambda          phi          tau 
+#>  803.1184916 -397.5127654    0.8542077   -2.7167717   -1.7694993    5.9969601 
+#>        delta 
+#>    2.9302810 
+#> 
+#> Objective Value (Huber loss): 217118.3 
+#> Residual Sum of Squares (RSS): 455980.6 
+#> Total Sum of Squares (TSS): 4702302 
+#> R-squared: 0.903 
+#> Root Mean Squared Error (RMSE): 33.7  ms 
+#> Mean Absolute Percentage Error (MAPE): 3.9  % 
+#> Number of observations: 401 
+#> Convergence Code: 0
+
+## Finally, lets see a plot with diagnostics statistics
+plot(fit_summary)
 ```
 
 <img src="man/figures/README-unnamed-chunk-2-3.png" width="100%" />
-
-``` r
-
-# For additional insight, plot the residuals from the fitted model
-residuals <- RRi_simulated - fitted_RRi
-plot(time_vec, residuals, type = "l", col = "purple",
-     main = "Residuals of the Fitted Dual-Logistic Model",
-     xlab = "Time (s)", ylab = "Residual (ms)", axes = FALSE)
-axis(1);axis(2)
-abline(h = 0, lty = 2)
-```
-
-<img src="man/figures/README-unnamed-chunk-2-4.png" width="100%" />
 
 The above example demonstrates multiple steps. First, a theoretical RRi
 signal is computed from the dual-logistic model. Next, a noisy version

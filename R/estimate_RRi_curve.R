@@ -33,6 +33,8 @@
 #'
 #' @return A list containing:
 #'   \describe{
+#'     \item{data}{The input data (after removing missing cases) and fitted values
+#'     from the dual logistic model.}
 #'     \item{method}{The optimization method used.}
 #'     \item{parameters}{The estimated parameters from the model.}
 #'     \item{objective_value}{The final value of the objective (Huber loss) function.}
@@ -112,8 +114,15 @@ estimate_RRi_curve <- function(time, RRi,
                method = method, control = list(maxit = 10000))
 
   # Return the fit details:
-  list(method = method,
-       parameters = fit$par,
-       objective_value = fit$value,
-       convergence = fit$convergence)
+  output <- list(
+    data = data.frame(time, RRi,
+                      fitted = dual_logistic(time, fit$par)),
+    method = method,
+    parameters = fit$par,
+    objective_value = fit$value,
+    convergence = fit$convergence
+  )
+
+  class(output) <- "RRi_fit"
+  return(output)
 }
