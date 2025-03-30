@@ -21,7 +21,8 @@ phase. In our formulation, the model is defined by the following
 equation:
 
 $$
-RRi(t) = \alpha + \frac{\beta}{1 + \exp\left\{\lambda\,(t-\tau)\right\}} - \frac{c\,\beta}{1 + \exp\left\{\phi\,(t-\tau-\delta)\right\}},
+RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda\ (t-\tau)}} - 
+         \frac{c\,\beta}{1 + e^{\phi\ (t-\tau-\delta)}},
 $$
 
 where $\alpha$ represents the baseline RRi level, $\beta$ controls the
@@ -100,7 +101,7 @@ library(CardioCurveR)
 
 # Simulate a time vector and a theoretical RRi signal using the dual-logistic model.
 set.seed(123)
-time_vec <- seq(0, 20, by = 0.1)
+time_vec <- seq(0, 20, by = 0.01)
 
 # Define the true model parameters from Castillo-Aguilar et al. (2025)
 true_params <- list(alpha = 800, beta = -375, c = 0.85, 
@@ -113,8 +114,8 @@ RRi_theoretical <- dual_logistic(time_vec, true_params)
 # Visualize the theoretical model
 plot(time_vec, RRi_theoretical, type = "l", col = "blue", lwd = 2,
      main = "Theoretical Dual-Logistic RRi Model",
-     xlab = "Time (s)", ylab = "RR Interval (ms)")
-grid()
+     xlab = "Time (s)", ylab = "RR Interval (ms)", axes = FALSE)
+axis(1);axis(2)
 ```
 
 <img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
@@ -130,9 +131,9 @@ RRi_filtered <- filter_signal(RRi_simulated, n = 3, W = 0.5, abs = 5)
 # Plot the simulated signal and its filtered version
 plot(time_vec, RRi_simulated, type = "l", col = "red", lwd = 1,
      main = "Simulated (Red) vs. Filtered (Blue) RRi Signal",
-     xlab = "Time (s)", ylab = "RR Interval (ms)")
+     xlab = "Time (s)", ylab = "RR Interval (ms)", axes = FALSE)
+axis(1);axis(2)
 lines(time_vec, RRi_filtered, col = "blue", lwd = 2)
-grid()
 ```
 
 <img src="man/figures/README-unnamed-chunk-2-2.png" width="100%" />
@@ -147,12 +148,12 @@ print(fit_summary)
 #> 
 #> $parameters
 #>        alpha         beta            c       lambda          phi          tau 
-#>  800.3824502 -378.7915112    0.8372124   -3.2515187   -1.9724294    6.0032591 
+#>  800.5394360 -371.2615984    0.8513614   -3.1655726   -1.9580225    5.9710957 
 #>        delta 
-#>    2.8764451 
+#>    3.0396702 
 #> 
 #> $objective_value
-#> [1] 103300
+#> [1] 1158735
 #> 
 #> $convergence
 #> [1] 0
@@ -161,9 +162,9 @@ print(fit_summary)
 fitted_RRi <- dual_logistic(time_vec, fit_summary$parameters)
 plot(time_vec, RRi_simulated, type = "l", col = "grey", lwd = 1,
      main = "Simulated RRi Signal with Fitted Model",
-     xlab = "Time (s)", ylab = "RR Interval (ms)")
+     xlab = "Time (s)", ylab = "RR Interval (ms)", axes = FALSE)
+axis(1);axis(2)
 lines(time_vec, fitted_RRi, col = "red", lwd = 2)
-grid()
 ```
 
 <img src="man/figures/README-unnamed-chunk-2-3.png" width="100%" />
@@ -174,9 +175,9 @@ grid()
 residuals <- RRi_simulated - fitted_RRi
 plot(time_vec, residuals, type = "l", col = "purple",
      main = "Residuals of the Fitted Dual-Logistic Model",
-     xlab = "Time (s)", ylab = "Residual (ms)")
+     xlab = "Time (s)", ylab = "Residual (ms)", axes = FALSE)
+axis(1);axis(2)
 abline(h = 0, lty = 2)
-grid()
 ```
 
 <img src="man/figures/README-unnamed-chunk-2-4.png" width="100%" />

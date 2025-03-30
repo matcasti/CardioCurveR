@@ -10,6 +10,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
+  dpi = 400,
   out.width = "100%"
 )
 ```
@@ -24,7 +25,8 @@ knitr::opts_chunk$set(
 CardioCurveR provides an automated and robust framework for modeling RR interval (RRi) signals. The package is built around a dual-logistic model, as described by Castillo-Aguilar et al. (2025), which captures both the rapid drop in RRi during exercise and the subsequent recovery phase. In our formulation, the model is defined by the following equation:
 
 $$
-RRi(t) = \alpha + \frac{\beta}{1 + \exp\left\{\lambda\,(t-\tau)\right\}} - \frac{c\,\beta}{1 + \exp\left\{\phi\,(t-\tau-\delta)\right\}},
+RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda\ (t-\tau)}} - 
+         \frac{c\,\beta}{1 + e^{\phi\ (t-\tau-\delta)}},
 $$
 
 where $\alpha$ represents the baseline RRi level, $\beta$ controls the amplitude of the drop, $\lambda$ modulates the steepness of the drop phase, $\tau$ is the time center of the drop, $c$ scales the recovery amplitude relative to $\beta$, $\phi$ controls the steepness of the recovery phase, and $\delta$ shifts the recovery phase in time relative to the drop.
@@ -78,7 +80,7 @@ library(CardioCurveR)
 
 # Simulate a time vector and a theoretical RRi signal using the dual-logistic model.
 set.seed(123)
-time_vec <- seq(0, 20, by = 0.1)
+time_vec <- seq(0, 20, by = 0.01)
 
 # Define the true model parameters from Castillo-Aguilar et al. (2025)
 true_params <- list(alpha = 800, beta = -375, c = 0.85, 
@@ -91,8 +93,8 @@ RRi_theoretical <- dual_logistic(time_vec, true_params)
 # Visualize the theoretical model
 plot(time_vec, RRi_theoretical, type = "l", col = "blue", lwd = 2,
      main = "Theoretical Dual-Logistic RRi Model",
-     xlab = "Time (s)", ylab = "RR Interval (ms)")
-grid()
+     xlab = "Time (s)", ylab = "RR Interval (ms)", axes = FALSE)
+axis(1);axis(2)
 
 # Simulate a noisy RRi signal by adding Gaussian noise
 RRi_simulated <- RRi_theoretical + rnorm(length(time_vec), sd = 35)
@@ -103,9 +105,9 @@ RRi_filtered <- filter_signal(RRi_simulated, n = 3, W = 0.5, abs = 5)
 # Plot the simulated signal and its filtered version
 plot(time_vec, RRi_simulated, type = "l", col = "red", lwd = 1,
      main = "Simulated (Red) vs. Filtered (Blue) RRi Signal",
-     xlab = "Time (s)", ylab = "RR Interval (ms)")
+     xlab = "Time (s)", ylab = "RR Interval (ms)", axes = FALSE)
+axis(1);axis(2)
 lines(time_vec, RRi_filtered, col = "blue", lwd = 2)
-grid()
 
 # Estimate the dual-logistic model parameters from the noisy RRi signal
 fit_summary <- estimate_RRi_curve(time = time_vec, RRi = RRi_simulated)
@@ -115,17 +117,17 @@ print(fit_summary)
 fitted_RRi <- dual_logistic(time_vec, fit_summary$parameters)
 plot(time_vec, RRi_simulated, type = "l", col = "grey", lwd = 1,
      main = "Simulated RRi Signal with Fitted Model",
-     xlab = "Time (s)", ylab = "RR Interval (ms)")
+     xlab = "Time (s)", ylab = "RR Interval (ms)", axes = FALSE)
+axis(1);axis(2)
 lines(time_vec, fitted_RRi, col = "red", lwd = 2)
-grid()
 
 # For additional insight, plot the residuals from the fitted model
 residuals <- RRi_simulated - fitted_RRi
 plot(time_vec, residuals, type = "l", col = "purple",
      main = "Residuals of the Fitted Dual-Logistic Model",
-     xlab = "Time (s)", ylab = "Residual (ms)")
+     xlab = "Time (s)", ylab = "Residual (ms)", axes = FALSE)
+axis(1);axis(2)
 abline(h = 0, lty = 2)
-grid()
 ```
 
 The above example demonstrates multiple steps. First, a theoretical RRi signal is computed from the dual-logistic model. Next, a noisy version of the signal is simulated and then cleaned using a Butterworth low-pass filter. The noisy signal is used to estimate the dual-logistic model parameters through a robust optimization procedure. Visualizations are provided for the theoretical curve, the noisy versus filtered signals, the fitted model overlay, and the residuals of the fit, offering comprehensive insight into each stage of the process.
