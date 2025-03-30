@@ -43,7 +43,7 @@ that the optimization process is robust even in the presence of noisy or ectopic
 The dual-logistic model, as described in Castillo-Aguilar et al. (2025), is defined as:
 
 \deqn{
-\text{RRi}(t) = \alpha + \frac{\beta}{1 + \exp(\lambda (t - \tau))} - \frac{c \, \beta}{1 + \exp(\phi (t - \tau - \delta))}
+\text{RRi}(t) = \alpha + \frac{\beta}{1 + e^{\lambda (t - \tau)}} - \frac{c \, \beta}{1 + e^{\phi (t - \tau - \delta)}}
 }
 
 where:
