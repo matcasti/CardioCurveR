@@ -40,6 +40,6 @@ sticker(p, package = "CardioCurveR",
         p_x = 1.2, p_y = 1.4, p_size = 24,
         url = "matcasti.github.io/CardioCurveR/",
         u_color = "#AAAAAA", u_size = 8,
-        )
+        filename = "logo.png")
 
-use_logo(img = "CardioCurveR.png")
+use_logo(img = "logo.png")

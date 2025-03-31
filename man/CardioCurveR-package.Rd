@@ -5,6 +5,8 @@
 \alias{CardioCurveR-package}
 \title{CardioCurveR: Nonlinear Modeling of R-R Interval Dynamics}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 CardioCurveR provides an automated and robust framework for analyzing R-R interval (RRi) signals using advanced nonlinear modeling and preprocessing techniques. The package implements a dual-logistic model to capture the rapid drop and subsequent recovery of RRi during exercise, as described by Castillo-Aguilar et al. (2025). In addition, CardioCurveR includes tools for filtering RRi signals using zero-phase Butterworth low-pass filtering and for cleaning ectopic beats via adaptive outlier replacement using local regression and robust statistics. These integrated methods preserve the dynamic features of RRi signals and facilitate accurate cardiovascular monitoring and clinical research.
 }
 \seealso{

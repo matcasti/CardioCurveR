@@ -1,6 +1,14 @@
 url: https://matcasti.github.io/CardioCurveR/
 template:
   bootstrap: 5
+  light-switch: true
+  opengraph:
+    image:
+      src: logo.png
+    twitter:
+      creator: "@matias_science"
+      site: "@nimach_group"
+      card: summary_large_image
   includes:
     in_header: |
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
