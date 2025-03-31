@@ -113,7 +113,7 @@ RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda (t-\tau)}} - \frac{c\,\beta}{1 + e
 <p>First we load the package <code>CardioCurveR</code>, assuming that you first installed it.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/matcasti/CardioCurveR" class="external-link">CardioCurveR</a></span><span class="op">)</span></span></code></pre></div>
-<p>Then, we simulate data with specific parameters from the dual-logistic model described in Castillo-Aguilar et al. (2025).</p>
+<p>Then, we simulate data with specific parameters from the dual-logistic model described in <a href="https://www.nature.com/articles/s41598-025-93654-6" class="external-link">Castillo-Aguilar et al. (2025)</a>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Simulate a time vector and a theoretical RRi signal using the dual-logistic model.</span></span>
 <span><span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">20</span>, by <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
