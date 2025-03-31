@@ -77,11 +77,12 @@
 <h2 id="nonlinear-modeling-of-r-r-interval-dynamics">Nonlinear Modeling of R-R Interval Dynamics<a class="anchor" aria-label="anchor" href="#nonlinear-modeling-of-r-r-interval-dynamics"></a>
 </h2>
 <p>CardioCurveR provides an automated and robust framework for modeling RR interval (RRi) signals. The package is built around a dual-logistic model, as described by <a href="https://www.nature.com/articles/s41598-025-93654-6" class="external-link">Castillo-Aguilar et al. (2025)</a>, which captures both the rapid drop in RRi during exercise and the subsequent recovery phase. In our formulation, the model is defined by the following equation:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>R</mi><mi>i</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>α</mi><mo>+</mo><mfrac><mi>β</mi><mrow><mn>1</mn><mo>+</mo><msup><mi>e</mi><mrow><mi>λ</mi><mspace width="0.222em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>−</mo><mi>τ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msup></mrow></mfrac><mo>−</mo><mfrac><mrow><mi>c</mi><mspace width="0.167em"></mspace><mi>β</mi></mrow><mrow><mn>1</mn><mo>+</mo><msup><mi>e</mi><mrow><mi>ϕ</mi><mspace width="0.222em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>−</mo><mi>τ</mi><mo>−</mo><mi>δ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msup></mrow></mfrac><mo>,</mo></mrow><annotation encoding="application/x-tex">
-RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda\ (t-\tau)}} -
-         \frac{c\,\beta}{1 + e^{\phi\ (t-\tau-\delta)}},
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>R</mi><mi>i</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>α</mi><mo>+</mo><mfrac><mi>β</mi><mrow><mn>1</mn><mo>+</mo><msup><mi>e</mi><mrow><mi>λ</mi><mspace width="0.222em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>−</mo><mi>τ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msup></mrow></mfrac><mo>+</mo><mfrac><mrow><mo>−</mo><mi>c</mi><mspace width="0.222em"></mspace><mo>⋅</mo><mi>β</mi></mrow><mrow><mn>1</mn><mo>+</mo><msup><mi>e</mi><mrow><mi>ϕ</mi><mspace width="0.222em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>−</mo><mi>τ</mi><mo>−</mo><mi>δ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msup></mrow></mfrac></mrow><annotation encoding="application/x-tex">
+RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda\ (t-\tau)}} +
+         \frac{-c\ \cdot \beta}{1 + e^{\phi\ (t-\tau-\delta)}}
 </annotation></semantics></math></p>
 <p>where <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math> represents the baseline RRi level, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>β</mi><annotation encoding="application/x-tex">\beta</annotation></semantics></math> controls the amplitude of the drop, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math> modulates the steepness of the drop phase, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math> is the time center of the drop, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math> scales the recovery amplitude relative to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>β</mi><annotation encoding="application/x-tex">\beta</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϕ</mi><annotation encoding="application/x-tex">\phi</annotation></semantics></math> controls the steepness of the recovery phase, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math> shifts the recovery phase in time relative to the drop.</p>
+<p><img src="reference/figures/illustrative_curve.svg" style="width:100.0%"></p>
 <p>CardioCurveR also incorporates advanced signal filtering techniques using a zero-phase Butterworth filter to preprocess the RRi data and remove edge artifacts. This ensures that the dynamic fluctuations are preserved for subsequent non-linear modeling.</p>
 </div>
 <div class="section level2">
@@ -230,11 +231,7 @@ RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda (t-\tau)}} - \frac{c\,\beta}{1 + e
 </h3>
 <p>First, we need to remove ectopic signals. We can do this with our <code><a href="reference/clean_outlier.html">clean_outlier()</a></code> function like this:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">## First we call our function</span></span>
-<span><span class="va">cleaned_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/clean_outlier.html">clean_outlier</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">RRi_simulated</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">## And them, add the cleaned signal to our original table as another column</span></span>
-<span><span class="va">RRi_cleaned</span> <span class="op">&lt;-</span> <span class="va">cleaned_data</span><span class="op">$</span><span class="va">signal</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">RRi_cleaned</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/clean_outlier.html">clean_outlier</a></span><span class="op">(</span><span class="va">RRi_simulated</span><span class="op">)</span></span></code></pre></div>
 <p>So now, let’s check how it looks our cleaned signal (without ectopic hearbeats):</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -274,9 +271,9 @@ RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda (t-\tau)}} - \frac{c\,\beta}{1 + e
 <span><span class="co">#&gt; Optimization Method: L-BFGS-B </span></span>
 <span><span class="co">#&gt; Estimated Parameters:</span></span>
 <span><span class="co">#&gt;        alpha         beta            c       lambda          phi          tau </span></span>
-<span><span class="co">#&gt;  800.3187317 -379.8993874    0.8606058   -2.9594002   -1.8927805    5.9759377 </span></span>
+<span><span class="co">#&gt;  800.3186838 -379.8994021    0.8606059   -2.9593948   -1.8927832    5.9759379 </span></span>
 <span><span class="co">#&gt;        delta </span></span>
-<span><span class="co">#&gt;    3.0115352 </span></span>
+<span><span class="co">#&gt;    3.0115350 </span></span>
 <span><span class="co">#&gt; Objective Value (Huber loss): 921733.7 </span></span>
 <span><span class="co">#&gt; Convergence Code: 0</span></span></code></pre></div>
 <p>And as simple as that we have fitted the dual logistic model to our processed data. Let’s explore how well our model captured the pattern from the generated data. We can further use other base functions to explore the resulting object.</p>
@@ -288,9 +285,9 @@ RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda (t-\tau)}} - \frac{c\,\beta}{1 + e
 <span><span class="co">#&gt; Optimization Method: L-BFGS-B </span></span>
 <span><span class="co">#&gt; Estimated Parameters:</span></span>
 <span><span class="co">#&gt;        alpha         beta            c       lambda          phi          tau </span></span>
-<span><span class="co">#&gt;  800.3187317 -379.8993874    0.8606058   -2.9594002   -1.8927805    5.9759377 </span></span>
+<span><span class="co">#&gt;  800.3186838 -379.8994021    0.8606059   -2.9593948   -1.8927832    5.9759379 </span></span>
 <span><span class="co">#&gt;        delta </span></span>
-<span><span class="co">#&gt;    3.0115352 </span></span>
+<span><span class="co">#&gt;    3.0115350 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Objective Value (Huber loss): 921733.7 </span></span>
 <span><span class="co">#&gt; Residual Sum of Squares (RSS): 1902518 </span></span>
@@ -321,7 +318,7 @@ RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda (t-\tau)}} - \frac{c\,\beta}{1 + e
 <p><img src="reference/figures/README-unnamed-chunk-16-1.svg" width="100%"></p>
 <p>We can see that our model did a fairly well job capturing the underlying true curve, which demonstrate our model’s capabilities in capturing the RRi dynamics in response to exercise when this double-logistic behavior is inherently present.</p>
 <p>The above example demonstrates multiple steps. First, a theoretical RRi signal is computed from the dual-logistic model. Next, a noisy version of the signal is simulated and then cleaned using a Butterworth low-pass filter. The cleaned signal is used to estimate the dual-logistic model parameters through a robust optimization procedure. Visualizations are provided for the theoretical curve, the noisy versus filtered signals, the fitted model overlay, and the residuals of the fit, offering comprehensive insight into each stage of the process.</p>
-<p>Enjoy exploring your RR interval dynamics and modeling them robustly with CardioCurveR!</p>
+<p>Enjoy exploring your RR interval dynamics and modeling them robustly with <em>CardioCurveR</em>!</p>
 </div>
 </div>
 </div>
