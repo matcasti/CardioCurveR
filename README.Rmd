@@ -29,11 +29,13 @@ knitr::opts_chunk$set(
 CardioCurveR provides an automated and robust framework for modeling RR interval (RRi) signals. The package is built around a dual-logistic model, as described by [Castillo-Aguilar et al. (2025)](https://www.nature.com/articles/s41598-025-93654-6), which captures both the rapid drop in RRi during exercise and the subsequent recovery phase. In our formulation, the model is defined by the following equation:
 
 $$
-RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda\ (t-\tau)}} - 
-         \frac{c\,\beta}{1 + e^{\phi\ (t-\tau-\delta)}},
+RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda\ (t-\tau)}} + 
+         \frac{-c\ \cdot \beta}{1 + e^{\phi\ (t-\tau-\delta)}}
 $$
 
 where $\alpha$ represents the baseline RRi level, $\beta$ controls the amplitude of the drop, $\lambda$ modulates the steepness of the drop phase, $\tau$ is the time center of the drop, $c$ scales the recovery amplitude relative to $\beta$, $\phi$ controls the steepness of the recovery phase, and $\delta$ shifts the recovery phase in time relative to the drop.
+
+![](man/figures/illustrative_curve.svg){width=100%}
 
 CardioCurveR also incorporates advanced signal filtering techniques using a zero-phase Butterworth filter to preprocess the RRi data and remove edge artifacts. This ensures that the dynamic fluctuations are preserved for subsequent non-linear modeling.
 
@@ -202,11 +204,7 @@ Okay so now this look like real-life signal data. Now the question lies: Can we 
 First, we need to remove ectopic signals. We can do this with our `clean_outlier()` function like this:
 
 ```{r}
-## First we call our function
-cleaned_data <- clean_outlier(time, RRi_simulated)
-
-## And them, add the cleaned signal to our original table as another column
-RRi_cleaned <- cleaned_data$signal
+RRi_cleaned <- clean_outlier(RRi_simulated)
 ```
 
 So now, let's check how it looks our cleaned signal (without ectopic hearbeats):
@@ -288,4 +286,4 @@ We can see that our model did a fairly well job capturing the underlying true cu
 
 The above example demonstrates multiple steps. First, a theoretical RRi signal is computed from the dual-logistic model. Next, a noisy version of the signal is simulated and then cleaned using a Butterworth low-pass filter. The cleaned signal is used to estimate the dual-logistic model parameters through a robust optimization procedure. Visualizations are provided for the theoretical curve, the noisy versus filtered signals, the fitted model overlay, and the residuals of the fit, offering comprehensive insight into each stage of the process.
 
-Enjoy exploring your RR interval dynamics and modeling them robustly with CardioCurveR!
+Enjoy exploring your RR interval dynamics and modeling them robustly with *CardioCurveR*!

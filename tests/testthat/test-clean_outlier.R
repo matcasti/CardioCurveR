@@ -1,4 +1,4 @@
-test_that("clean_outlier returns a data.frame with proper dimensions and columns", {
+test_that("clean_outlier returns a numeric vector with proper dimensions", {
   set.seed(123)
   n <- 200
   time_vec <- seq(0, 20, length.out = n)
@@ -10,12 +10,10 @@ test_that("clean_outlier returns a data.frame with proper dimensions and columns
   noise_idx <- sample.int(n, size = floor(n * 0.05))
   signal[noise_idx] <- signal[noise_idx] * runif(length(noise_idx), 0.25, 2.00)
 
-  df <- clean_outlier(time = time_vec, signal = signal)
+  signal_clean <- clean_outlier(signal = signal)
 
-  expect_s3_class(df, "data.frame")
-  expect_named(df, c("time", "signal"))
-  expect_equal(nrow(df), length(time_vec))
-  expect_equal(ncol(df), 2)
+  expect_type(signal_clean, "double")
+  expect_equal(length(signal_clean), length(time_vec))
 })
 
 test_that("clean_outlier handles missing values correctly", {
@@ -28,12 +26,11 @@ test_that("clean_outlier handles missing values correctly", {
   time_vec[c(10, 20)] <- NA
   signal[c(10, 20)] <- NA
 
-  df <- clean_outlier(time = time_vec, signal = signal)
+  df <- clean_outlier(signal = signal)
 
-  # The output time vector and signal should have length = n minus the NA cases.
-  expect_equal(nrow(df), n - 2)
-  expect_true(all(!is.na(df$time)))
-  expect_true(all(!is.na(df$signal)))
+  # The output signal should have length = n minus the NA cases.
+  expect_equal(length(df), n - 2)
+  expect_true(all(!is.na(df)))
 })
 
 test_that("clean_outlier applies Gaussian replacement correctly", {
@@ -47,7 +44,7 @@ test_that("clean_outlier applies Gaussian replacement correctly", {
   out_idx <- sample(seq_along(signal), size = 10)
   signal[out_idx] <- signal[out_idx] + 300
 
-  df <- clean_outlier(time = time_vec, signal = signal,
+  df <- clean_outlier(signal = signal,
                       loess_span = 0.3, threshold = 2,
                       replace = "gaussian", seed = 123)
 
@@ -61,9 +58,9 @@ test_that("clean_outlier applies Gaussian replacement correctly", {
 
   # Check that, for at least one ectopic index, the replaced value differs from the original.
   if (any(ectopic)) {
-    expect_false(all(signal[ectopic] == df$signal[ectopic]))
+    expect_false(all(signal[ectopic] == df[ectopic]))
     # Check that replaced values are generated from a normal distribution with mean equal to prediction.
-    expect_true(all(abs(df$signal[ectopic] - predicted[ectopic]) <= 4 * mad_val))
+    expect_true(all(abs(df[ectopic] - predicted[ectopic]) <= 4 * mad_val))
   }
 })
 
@@ -75,7 +72,7 @@ test_that("clean_outlier applies Uniform replacement correctly", {
   out_idx <- sample(seq_along(signal), size = 10)
   signal[out_idx] <- signal[out_idx] + 300
 
-  df <- clean_outlier(time = time_vec, signal = signal,
+  df <- clean_outlier(signal = signal,
                       loess_span = 0.3, threshold = 2,
                       replace = "uniform", seed = 123)
 
@@ -88,8 +85,8 @@ test_that("clean_outlier applies Uniform replacement correctly", {
 
   # Check that uniform replacements fall between predicted ± mad_val.
   if (any(ectopic)) {
-    expect_true(all(df$signal[ectopic] >= predicted[ectopic] - mad_val))
-    expect_true(all(df$signal[ectopic] <= predicted[ectopic] + mad_val))
+    expect_true(all(df[ectopic] >= predicted[ectopic] - mad_val))
+    expect_true(all(df[ectopic] <= predicted[ectopic] + mad_val))
   }
 })
 
@@ -101,7 +98,7 @@ test_that("clean_outlier applies LOESS replacement correctly", {
   out_idx <- sample(seq_along(signal), size = 10)
   signal[out_idx] <- signal[out_idx] + 300
 
-  df <- clean_outlier(time = time_vec, signal = signal,
+  df <- clean_outlier(signal = signal,
                       loess_span = 0.3, threshold = 2,
                       replace = "loess", seed = 123)
 
@@ -114,21 +111,10 @@ test_that("clean_outlier applies LOESS replacement correctly", {
 
   # For loess replacement, cleaned values should equal the predicted values at ectopic points.
   if (any(ectopic)) {
-    expect_equal(df$signal[ectopic], unname(predicted[ectopic]))
+    expect_equal(df[ectopic], unname(predicted[ectopic]))
   }
 })
 
 test_that("clean_outlier errors on non-numeric inputs", {
-  expect_error(clean_outlier(time = "not numeric", signal = rnorm(100)),
-               regexp = "`time` and `signal` must be both numeric")
-  expect_error(clean_outlier(time = seq(0, 20, length.out = 100), signal = "not numeric"),
-               "`time` and `signal` must be both numeric")
+  expect_error(clean_outlier(signal = "not numeric"), regexp = "\`signal\` must be numeric")
 })
-
-test_that("clean_outlier errors on different length inputs", {
-  expect_error(clean_outlier(time = 1:99, signal = rnorm(100)),
-               regexp = "`time` and `signal` must be of the same length")
-  expect_error(clean_outlier(time = 1:200, signal = rnorm(100)),
-               "`time` and `signal` must be of the same length")
-})
-

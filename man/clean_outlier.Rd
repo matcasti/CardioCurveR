@@ -5,7 +5,6 @@
 \title{Clean RR-Interval Signal Using Local Smoothing and Adaptive Outlier Replacement}
 \usage{
 clean_outlier(
-  time,
   signal,
   loess_span = 0.25,
   threshold = 2,
@@ -14,8 +13,6 @@ clean_outlier(
 )
 }
 \arguments{
-\item{time}{A numeric vector of time points corresponding to the RRi recordings.}
-
 \item{signal}{A numeric vector of RR interval (RRi) values.}
 
 \item{loess_span}{A numeric value controlling the span for the LOESS fit (default is 0.25). Smaller
@@ -30,14 +27,14 @@ to determine the cutoff for flagging ectopic beats.}
 \item{seed}{An integer to set the random seed for reproducibility of the replacement process (default is 123).}
 }
 \value{
-A \code{data.frame} containing the original time values and the cleaned RRi signal.
+A \code{numeric} vector containing the cleaned RRi signal.
 }
 \description{
 This function cleans an RR-interval (RRi) signal by identifying ectopic or noisy beats using
 a robust, locally adaptive approach. In the context of cardiovascular monitoring (such as
 for applying the Castillo-Aguilar et al. (2025) non-linear model), the function first fits a
-local regression (LOESS) to the RRi signal as a function of time, computes the residuals, and then
-identifies ectopic beats as those with residuals exceeding a multiple of the median absolute deviation.
+local regression (LOESS) to the RRi signal, computes the residuals, and then identifies ectopic
+beats as those with residuals exceeding a multiple of the median absolute deviation.
 }
 \details{
 The function offers several replacement strategies for these outliers:
@@ -66,14 +63,14 @@ noise_points <- sample.int(n, floor(n*0.05))
 signal[noise_points] <- signal[noise_points] * runif(25, 0.25, 2.00)
 
 # Clean the signal using the default Gaussian replacement strategy
-clean_df <- clean_outlier(time = time_vec, signal = signal,
+clean_signal <- clean_outlier(signal = signal,
                          loess_span = 0.25, threshold = 2,
                          replace = "gaussian", seed = 123)
 
-plot(time_vec, signal, main = "Original vs Cleaned R-R interval Signal",
+plot(signal, main = "Original vs Cleaned R-R interval Signal",
      xlab = "Time (min)", ylab = "RRi (ms)", type = "l", axes = FALSE)
 axis(1); axis(2)
-lines(clean_df, col = "red2")
+lines(clean_signal, col = "red2")
 }
 
 }

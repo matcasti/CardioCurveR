@@ -3,8 +3,8 @@
 #' This function cleans an RR-interval (RRi) signal by identifying ectopic or noisy beats using
 #' a robust, locally adaptive approach. In the context of cardiovascular monitoring (such as
 #' for applying the Castillo-Aguilar et al. (2025) non-linear model), the function first fits a
-#' local regression (LOESS) to the RRi signal as a function of time, computes the residuals, and then
-#' identifies ectopic beats as those with residuals exceeding a multiple of the median absolute deviation.
+#' local regression (LOESS) to the RRi signal, computes the residuals, and then identifies ectopic
+#' beats as those with residuals exceeding a multiple of the median absolute deviation.
 #'
 #' The function offers several replacement strategies for these outliers:
 #' \describe{
@@ -18,7 +18,6 @@
 #' This adaptive approach ensures that dynamic changes in the RRi signal, such as those observed during
 #' exercise, are preserved, while ectopic or spurious beats are corrected without "chopping" the data.
 #'
-#' @param time A numeric vector of time points corresponding to the RRi recordings.
 #' @param signal A numeric vector of RR interval (RRi) values.
 #' @param loess_span A numeric value controlling the span for the LOESS fit (default is 0.25). Smaller
 #'   values yield a more local fit.
@@ -28,7 +27,7 @@
 #'   \code{"gaussian"}, \code{"uniform"}, or \code{"loess"} (default is \code{"gaussian"}).
 #' @param seed An integer to set the random seed for reproducibility of the replacement process (default is 123).
 #'
-#' @return A \code{data.frame} containing the original time values and the cleaned RRi signal.
+#' @return A \code{numeric} vector containing the cleaned RRi signal.
 #'
 #' @examples
 #' \dontrun{
@@ -44,37 +43,33 @@
 #' signal[noise_points] <- signal[noise_points] * runif(25, 0.25, 2.00)
 #'
 #' # Clean the signal using the default Gaussian replacement strategy
-#' clean_df <- clean_outlier(time = time_vec, signal = signal,
+#' clean_signal <- clean_outlier(signal = signal,
 #'                          loess_span = 0.25, threshold = 2,
 #'                          replace = "gaussian", seed = 123)
 #'
-#' plot(time_vec, signal, main = "Original vs Cleaned R-R interval Signal",
+#' plot(signal, main = "Original vs Cleaned R-R interval Signal",
 #'      xlab = "Time (min)", ylab = "RRi (ms)", type = "l", axes = FALSE)
 #' axis(1); axis(2)
-#' lines(clean_df, col = "red2")
+#' lines(clean_signal, col = "red2")
 #' }
 #'
 #' @importFrom stats complete.cases loess predict mad rnorm runif
 #' @export
-clean_outlier <- function(time, signal,
-                         loess_span = 0.25, threshold = 2,
-                         replace = c("gaussian", "uniform", "loess"),
-                         seed = 123) {
+clean_outlier <- function(signal,
+                          loess_span = 0.25, threshold = 2,
+                          replace = c("gaussian", "uniform", "loess"),
+                          seed = 123) {
 
-  if (!is.numeric(time) || !is.numeric(signal)) {
-    stop("\`time\` and \`signal\` must be both numeric")
-  }
-  if (length(time) != length(signal)) {
-    stop("\`time\` and \`signal\` must be of the same length")
+  if (!is.numeric(signal)) {
+    stop("\`signal\` must be numeric")
   }
 
-  # Ensure that time and signal have complete cases
-  ind <- stats::complete.cases(time, signal)
-  time <- time[ind]
-  signal <- signal[ind]
+  # Ensure that signal have complete cases
+  signal <- signal[!is.na(signal)]
+  seq_vec <- seq_along(along.with = signal)
 
   # Fit a local regression model to capture dynamic trends
-  fit <- stats::loess(signal ~ time, span = loess_span)
+  fit <- stats::loess(signal ~ seq_vec, span = loess_span)
   predicted <- stats::predict(fit)
 
   # Compute residuals and determine adaptive threshold based on MAD
@@ -105,5 +100,5 @@ clean_outlier <- function(time, signal,
   }
 
   # Return the cleaned signal along with time
-  data.frame(time = time, signal = signal)
+  return(signal)
 }

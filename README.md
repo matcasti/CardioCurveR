@@ -22,8 +22,8 @@ recovery phase. In our formulation, the model is defined by the
 following equation:
 
 $$
-RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda\ (t-\tau)}} - 
-         \frac{c\,\beta}{1 + e^{\phi\ (t-\tau-\delta)}},
+RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda\ (t-\tau)}} + 
+         \frac{-c\ \cdot \beta}{1 + e^{\phi\ (t-\tau-\delta)}}
 $$
 
 where $\alpha$ represents the baseline RRi level, $\beta$ controls the
@@ -32,6 +32,8 @@ phase, $\tau$ is the time center of the drop, $c$ scales the recovery
 amplitude relative to $\beta$, $\phi$ controls the steepness of the
 recovery phase, and $\delta$ shifts the recovery phase in time relative
 to the drop.
+
+<img src="man/figures/illustrative_curve.svg" style="width:100.0%" />
 
 CardioCurveR also incorporates advanced signal filtering techniques
 using a zero-phase Butterworth filter to preprocess the RRi data and
@@ -238,11 +240,7 @@ First, we need to remove ectopic signals. We can do this with our
 `clean_outlier()` function like this:
 
 ``` r
-## First we call our function
-cleaned_data <- clean_outlier(time, RRi_simulated)
-
-## And them, add the cleaned signal to our original table as another column
-RRi_cleaned <- cleaned_data$signal
+RRi_cleaned <- clean_outlier(RRi_simulated)
 ```
 
 So now, let’s check how it looks our cleaned signal (without ectopic
@@ -299,9 +297,9 @@ print(fit_summary)
 #> Optimization Method: L-BFGS-B 
 #> Estimated Parameters:
 #>        alpha         beta            c       lambda          phi          tau 
-#>  800.3187317 -379.8993874    0.8606058   -2.9594002   -1.8927805    5.9759377 
+#>  800.3186838 -379.8994021    0.8606059   -2.9593948   -1.8927832    5.9759379 
 #>        delta 
-#>    3.0115352 
+#>    3.0115350 
 #> Objective Value (Huber loss): 921733.7 
 #> Convergence Code: 0
 ```
@@ -320,9 +318,9 @@ summary(fit_summary)
 #> Optimization Method: L-BFGS-B 
 #> Estimated Parameters:
 #>        alpha         beta            c       lambda          phi          tau 
-#>  800.3187317 -379.8993874    0.8606058   -2.9594002   -1.8927805    5.9759377 
+#>  800.3186838 -379.8994021    0.8606059   -2.9593948   -1.8927832    5.9759379 
 #>        delta 
-#>    3.0115352 
+#>    3.0115350 
 #> 
 #> Objective Value (Huber loss): 921733.7 
 #> Residual Sum of Squares (RSS): 1902518 
@@ -388,4 +386,4 @@ the fitted model overlay, and the residuals of the fit, offering
 comprehensive insight into each stage of the process.
 
 Enjoy exploring your RR interval dynamics and modeling them robustly
-with CardioCurveR!
+with *CardioCurveR*!
