@@ -52,23 +52,29 @@
 #' Castillo-Aguilar, et al. (2025). *Enhancing Cardiovascular Monitoring: A Non-linear Model for Characterizing RR Interval Fluctuations in Exercise and Recovery*. **Scientific Reports**, 15(1), 8628.
 #'
 #' @examples
-#' \dontrun{
-#'   # Simulate an example RRi signal:
-#'   set.seed(123)
-#'   time_vec <- seq(0, 20, by = 0.01)
-#'   true_params <- c(alpha = 1000, beta = -380, c = 0.85,
-#'                    lambda = -3, phi = -2, tau = 6, delta = 3)
-#'   RRi_simulated <- dual_logistic(time_vec, true_params) +
-#'                     rnorm(length(time_vec), sd = 30)
 #'
-#'   # Estimate the model parameters:
-#'   fit <- estimate_RRi_curve(time = time_vec, RRi = RRi_simulated)
-#'   print(fit)
+#' true_params <- c(alpha = 800, beta = -300, c = 0.80,
+#'                  lambda = -3, phi = -1, tau = 6, delta = 3)
 #'
-#'   plot(time_vec, RRi_simulated, type = "l", xlab = "Time (min)", ylab = "RRi (ms)",
-#'        main = "Signal and fitted RRi Non-Linear Model")
-#'   lines(time_vec, dual_logistic(time_vec, fit$parameters), col = "red", lwd = 2)
-#' }
+#' time_vec <- seq(0, 20, by = 0.01)
+#'
+#' set.seed(1234)
+#'
+#' # Simulate an example RRi signal:
+#' RRi_simulated <- dual_logistic(time_vec, true_params) +
+#'                   rnorm(length(time_vec), sd = 30)
+#'
+#' # Estimate the model parameters:
+#' fit <- estimate_RRi_curve(time = time_vec, RRi = RRi_simulated)
+#'
+#' # Print method
+#' print(fit)
+#'
+#' # Summary method
+#' summary(fit)
+#'
+#' # Plot method
+#' plot(fit)
 #'
 #' @importFrom stats complete.cases optim
 #' @export

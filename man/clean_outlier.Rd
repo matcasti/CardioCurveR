@@ -50,16 +50,21 @@ This adaptive approach ensures that dynamic changes in the RRi signal, such as t
 exercise, are preserved, while ectopic or spurious beats are corrected without "chopping" the data.
 }
 \examples{
-\dontrun{
+
 # Simulate an RRi signal with dynamic behavior and ectopic beats:
-set.seed(123)
 n <- 1000
+
 time_vec <- seq(0, 20, length.out = n)
+
+set.seed(123)
+
 signal <- 1000 -
-400 / (1 + exp(-3 * (time_vec - 6))) +
-300 / (1 + exp(-2 * (time_vec - 10))) + rnorm(n, sd = 50)
+  400 / (1 + exp(-3 * (time_vec - 6))) +
+  300 / (1 + exp(-2 * (time_vec - 10))) + rnorm(n, sd = 50)
+
 # Introduce ectopic beats (5\% of total signal)
-noise_points <- sample.int(n, floor(n*0.05))
+noise_points <- sample.int(n, floor(n * 0.05))
+
 signal[noise_points] <- signal[noise_points] * runif(25, 0.25, 2.00)
 
 # Clean the signal using the default Gaussian replacement strategy
@@ -67,10 +72,15 @@ clean_signal <- clean_outlier(signal = signal,
                          loess_span = 0.25, threshold = 2,
                          replace = "gaussian", seed = 123)
 
-plot(signal, main = "Original vs Cleaned R-R interval Signal",
-     xlab = "Time (min)", ylab = "RRi (ms)", type = "l", axes = FALSE)
-axis(1); axis(2)
-lines(clean_signal, col = "red2")
-}
+# Plot the signal vs cleaned signal
+library(ggplot2)
+
+ggplot() +
+geom_line(aes(time_vec, signal), linewidth = 1/4, col = "purple") +
+geom_line(aes(time_vec, clean_signal), linewidth = 1/4, col = "blue") +
+labs(x = "Time (min)", y = "RRi (ms)",
+     title = "Original (Purple) vs Cleaned signal (Blue)") +
+theme_minimal()
+
 
 }

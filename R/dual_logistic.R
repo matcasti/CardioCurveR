@@ -62,9 +62,14 @@
 #' RRi_model <- dual_logistic(t, params)
 #'
 #' # Plot the resulting model
-#' plot(t, RRi_model, type = "l", col = "blue",
-#'      main = "Dual-Logistic RRi Model (Castillo-Aguilar et al.)",
-#'      xlab = "Time", ylab = "RR Interval (ms)")
+#' library(ggplot2)
+#'
+#' ggplot() +
+#' geom_line(aes(t, RRi_model), linewidth = 1, col = "purple") +
+#'   labs(x = "Time (min)", y = "RRi (ms)",
+#'        title = "Dual-Logistic RRi Model",
+#'        caption = "Castillo-Aguilar et al. (2025)") +
+#'   theme_minimal()
 #'
 #' @export
 dual_logistic <- function(t, params) {

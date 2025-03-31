@@ -37,11 +37,20 @@ where \eqn{\alpha} is the baseline RRi level, \eqn{\beta} controls the amplitude
 \eqn{\lambda} and \eqn{\tau} define the drop phase, and \eqn{c}, \eqn{\phi}, and \eqn{\delta} govern the recovery.
 }
 \examples{
+
 data(sim_RRi)
+
 head(sim_RRi)
-plot(sim_RRi$time, sim_RRi$RRi_simulated, type = "l",
-     xlab = "Time (s)", ylab = "RR Interval (ms)",
-     main = "Simulated RRi Signal with Ectopic Beats")
+
+# Plot tha data
+library(ggplot2)
+
+ggplot(sim_RRi, aes(time, RRi_simulated)) +
+geom_line(linewidth = 1/4, col = "purple") +
+labs(x = "Time (s)", y = "RRi (ms)",
+     title = "Simulated RRi Signal with Ectopic Beats") +
+theme_minimal()
+
 }
 \references{
 Castillo-Aguilar, et al. (2025). \emph{Enhancing Cardiovascular Monitoring: A Non-linear Model for Characterizing RR Interval Fluctuations in Exercise and Recovery}. Scientific Reports, 15(1), 8628.

@@ -33,6 +33,9 @@ reference:
   - title: "Simulated Data"
     contents:
       - matches("^sim_RRi$")
+  - title: "Import RRi Data"
+    contents:
+      - matches("^import_RRi")
   - title: "S3 Methods for Model Output"
     contents:
       - matches("^(print|summary|plot)\\.")

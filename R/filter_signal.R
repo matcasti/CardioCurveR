@@ -31,22 +31,27 @@
 #' Castillo-Aguilar, et al. (2025). *Enhancing Cardiovascular Monitoring: A Non-linear Model for Characterizing RR Interval Fluctuations in Exercise and Recovery*. **Scientific Reports**, 15(1), 8628.
 #'
 #' @examples
-#' \dontrun{
-#'   # Example: Simulate a noisy RRi signal
-#'   set.seed(123)
-#'   time <- seq(0, 60, length.out = 150)
-#'   # Simulated RRi signal (in ms) with added noise
-#'   RRi <- 1000 + sin(seq(0, 2*pi, length.out = 150)) * 50 + rnorm(150, sd = 10)
 #'
-#'   # Clean the signal using the default settings
-#'   RRi_clean <- filter_signal(x = RRi, n = 3, W = 0.5, abs = 5)
+#' # Example: Simulate a noisy RRi signal
+#' time <- seq(0, 60, length.out = 150)
 #'
-#'   # Plot the original and filtered signals
-#'   plot(time, RRi, type = "l", col = "red",
-#'        main = "Original (red) vs. Filtered RRi Signal",
-#'        xlab = "Time (s)", ylab = "RR Interval (ms)")
-#'   lines(time, RRi_clean, type = "l", col = "blue")
-#' }
+#' set.seed(123)
+#'
+#' # Simulated RRi signal (in ms) with added noise
+#' RRi <- 1000 + sin(seq(0, 2*pi, length.out = 150)) * 50 + rnorm(150, sd = 10)
+#'
+#' # Clean the signal using the default settings
+#' RRi_clean <- filter_signal(x = RRi, n = 3, W = 0.5, abs = 5)
+#'
+#' # Plot the original and filtered signals
+#' library(ggplot2)
+#'
+#' ggplot() +
+#' geom_line(aes(time, RRi), linewidth = 1/2, col = "gray") +
+#' geom_line(aes(time, RRi_clean), linewidth = 1/2, col = "purple", na.rm = TRUE) +
+#' labs(x = "Time (s)", y = "RRi (ms)",
+#'      title = "Original (Gray) vs Filtered Signal (Purple)") +
+#' theme_minimal()
 #'
 #' @importFrom signal butter filtfilt
 #' @export
