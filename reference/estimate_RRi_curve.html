@@ -148,23 +148,55 @@ based on typical RRi signal ranges.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span>  <span class="co"># Simulate an example RRi signal:</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">time_vec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">20</span>, by <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">true_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">1000</span>, beta <span class="op">=</span> <span class="op">-</span><span class="fl">380</span>, c <span class="op">=</span> <span class="fl">0.85</span>,</span></span>
-<span class="r-in"><span>                   lambda <span class="op">=</span> <span class="op">-</span><span class="fl">3</span>, phi <span class="op">=</span> <span class="op">-</span><span class="fl">2</span>, tau <span class="op">=</span> <span class="fl">6</span>, delta <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">RRi_simulated</span> <span class="op">&lt;-</span> <span class="fu"><a href="dual_logistic.html">dual_logistic</a></span><span class="op">(</span><span class="va">time_vec</span>, <span class="va">true_params</span><span class="op">)</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>                    <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">time_vec</span><span class="op">)</span>, sd <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">true_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">800</span>, beta <span class="op">=</span> <span class="op">-</span><span class="fl">300</span>, c <span class="op">=</span> <span class="fl">0.80</span>,</span></span>
+<span class="r-in"><span>                 lambda <span class="op">=</span> <span class="op">-</span><span class="fl">3</span>, phi <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, tau <span class="op">=</span> <span class="fl">6</span>, delta <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="co"># Estimate the model parameters:</span></span></span>
-<span class="r-in"><span>  <span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">estimate_RRi_curve</span><span class="op">(</span>time <span class="op">=</span> <span class="va">time_vec</span>, RRi <span class="op">=</span> <span class="va">RRi_simulated</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">time_vec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">20</span>, by <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">time_vec</span>, <span class="va">RRi_simulated</span>, type <span class="op">=</span> <span class="st">"l"</span>, xlab <span class="op">=</span> <span class="st">"Time (min)"</span>, ylab <span class="op">=</span> <span class="st">"RRi (ms)"</span>,</span></span>
-<span class="r-in"><span>       main <span class="op">=</span> <span class="st">"Signal and fitted RRi Non-Linear Model"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">time_vec</span>, <span class="fu"><a href="dual_logistic.html">dual_logistic</a></span><span class="op">(</span><span class="va">time_vec</span>, <span class="va">fit</span><span class="op">$</span><span class="va">parameters</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"red"</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Simulate an example RRi signal:</span></span></span>
+<span class="r-in"><span><span class="va">RRi_simulated</span> <span class="op">&lt;-</span> <span class="fu"><a href="dual_logistic.html">dual_logistic</a></span><span class="op">(</span><span class="va">time_vec</span>, <span class="va">true_params</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>                  <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">time_vec</span><span class="op">)</span>, sd <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Estimate the model parameters:</span></span></span>
+<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">estimate_RRi_curve</span><span class="op">(</span>time <span class="op">=</span> <span class="va">time_vec</span>, RRi <span class="op">=</span> <span class="va">RRi_simulated</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Print method</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> RRi_fit Object</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Optimization Method: L-BFGS-B </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Estimated Parameters:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        alpha         beta            c       lambda          phi          tau </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  800.0103101 -295.1123155    0.7991941   -3.0636912   -1.0268231    5.9785596 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        delta </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    3.1004798 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Objective Value (Huber loss): 852819.5 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Convergence Code: 0 </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Summary method</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Summary of RRi_fit Object</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Optimization Method: L-BFGS-B </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Estimated Parameters:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        alpha         beta            c       lambda          phi          tau </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  800.0103101 -295.1123155    0.7991941   -3.0636912   -1.0268231    5.9785596 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        delta </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    3.1004798 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Objective Value (Huber loss): 852819.5 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Residual Sum of Squares (RSS): 1758802 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Total Sum of Squares (TSS): 12795299 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> R-squared: 0.8625 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Root Mean Squared Error (RMSE): 29.6  ms </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mean Absolute Percentage Error (MAPE): 3.3  % </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of observations: 2001 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Convergence Code: 0 </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Plot method</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="estimate_RRi_curve-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
