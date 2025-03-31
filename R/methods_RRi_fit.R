@@ -122,9 +122,6 @@ plot.RRi_fit <- function(x, ...) {
                   x = "Residuals (ms)", y = "Count") +
     ggplot2::theme_minimal()
 
-  if (!requireNamespace("gridExtra", quietly = TRUE)) {
-    stop("Package 'gridExtra' is required for plot.RRi_fit")
-  }
   gridExtra::grid.arrange(p1, p2, p3, ncol = 1)
 
   invisible(x)

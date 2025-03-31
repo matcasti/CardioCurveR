@@ -58,6 +58,14 @@ test_that("print.summary.boot_RRi_fit outputs expected text", {
   } else {
     expect_true(any(grepl("mean and standard deviation", printed)))
   }
+
+  attr(sum_obj, "robust") <- FALSE
+  printed <- capture.output(print(sum_obj))
+  if (isTRUE(attr(sum_obj, "robust"))) {
+    expect_true(any(grepl("median and median absolute deviation", printed)))
+  } else {
+    expect_true(any(grepl("mean and standard deviation", printed)))
+  }
 })
 
 test_that("plot.boot_RRi_fit produces density plots without error", {

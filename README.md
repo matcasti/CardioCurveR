@@ -105,7 +105,8 @@ library(CardioCurveR)
 ```
 
 Then, we simulate data with specific parameters from the dual-logistic
-model described in Castillo-Aguilar et al. (2025).
+model described in [Castillo-Aguilar et
+al. (2025)](https://www.nature.com/articles/s41598-025-93654-6).
 
 ``` r
 # Simulate a time vector and a theoretical RRi signal using the dual-logistic model.

@@ -49,8 +49,8 @@ bounded by the LOESS-predicted value \emph{±} the MAD.}
 \item{\code{"loess"}}{Simply replace ectopic values with the LOESS-predicted values.}
 }
 
-This adaptive approach ensures that dynamic changes in the RRi signal—such as those observed during
-exercise—are preserved, while ectopic or spurious beats are corrected without "chopping" the data.
+This adaptive approach ensures that dynamic changes in the RRi signal, such as those observed during
+exercise, are preserved, while ectopic or spurious beats are corrected without "chopping" the data.
 }
 \examples{
 \dontrun{
