@@ -80,7 +80,7 @@ noise and simulated ectopic beats.</p></dd>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The dual-logistic model is defined as:</p>
 <p>$$
-RRi(t) = \alpha + \frac{\beta}{1 + \exp\{\lambda (t - \tau)\}} - \frac{c \, \beta}{1 + \exp\{\phi (t - \tau - \delta)\}},
+RRi(t) = \alpha + \frac{\beta}{1 + \exp\{\lambda (t - \tau)\}} + \frac{-c \cdot \beta}{1 + \exp\{\phi (t - \tau - \delta)\}},
 $$</p>
 <p>where \(\alpha\) is the baseline RRi level, \(\beta\) controls the amplitude of the drop,
 \(\lambda\) and \(\tau\) define the drop phase, and \(c\), \(\phi\), and \(\delta\) govern the recovery.</p>
@@ -97,12 +97,12 @@ $$</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sim_RRi</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   time RRi_simulated</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.00     1312.3596</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.01      788.4911</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.02      877.9354</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.03      803.5254</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.04      806.4644</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.05      885.7532</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.00          1312</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.01           788</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.02           878</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.03           804</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.04           806</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.05           886</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot tha data</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></span>

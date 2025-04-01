@@ -107,15 +107,7 @@ cumulative sum of the RRi values divided by 60000 (to convert to minutes), and <
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The expected data format is a text file with one RR interval per line, for example:</p>
-<p>1312
-788
-878
-...
-813
-788
-783</p>
-<p>The function begins by checking that the input <code>file</code> is provided and that the options <code>remove_ectopic</code>
+    <p>The expected data format is a text file with one RR interval per line, for example:</p><table class="table table"><tr><td>[some-file.txt]:</td></tr><tr><td>1312</td></tr><tr><td>788</td></tr><tr><td>878</td></tr><tr><td>...</td></tr><tr><td>813</td></tr><tr><td>788</td></tr><tr><td>783</td></tr><tr><td></td></tr></table><p>The function begins by checking that the input <code>file</code> is provided and that the options <code>remove_ectopic</code>
 and <code>filter_noise</code> are logical values of length 1. It then reads the file using <code><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines()</a></code>,
 converts the readings to doubles, and replaces any values outside the realistic range (defined by <code>min</code> and <code>max</code>)
 with <code>NA</code>. After removing missing values, the function optionally cleans the signal to remove ectopic beats
@@ -139,12 +131,12 @@ the cleaned RRi signal and returns the result in a data frame.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sim_data</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         time      RRi</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.01311929 787.1572</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.02626080 788.4911</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.04089306 877.9354</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.05428515 803.5254</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.06772622 806.4644</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.08248878 885.7532</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.01312123 787.2738</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.02625456 788.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.04088790 878.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.05428790 804.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.06772123 806.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.08248790 886.0000</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
