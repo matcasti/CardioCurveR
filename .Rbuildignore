@@ -11,3 +11,4 @@
 ^data-raw$
 ^logo\.png$
 ^revdep$
+^CRAN-SUBMISSION$
