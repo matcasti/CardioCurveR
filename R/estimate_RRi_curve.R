@@ -9,7 +9,7 @@
 #' The dual-logistic model, as described in Castillo-Aguilar et al. (2025), is defined as:
 #'
 #' \deqn{
-#' \text{RRi}(t) = \alpha + \frac{\beta}{1 + e^{\lambda (t - \tau)}} + \frac{-c \cdot \beta}{1 + e^{\phi (t - \tau - \delta)}}
+#' RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda (t - \tau)}} + \frac{-c \cdot \beta}{1 + e^{\phi (t - \tau - \delta)}}
 #' }
 #'
 #' where:
@@ -26,15 +26,18 @@
 #'
 #' @param time A numeric vector of time points.
 #' @param RRi A numeric vector of RR interval values.
-#' @param start_params A named numeric vector of initial parameter estimates. Default is
+#' @param start_params A named numeric vector or list of initial parameter estimates. Default is
 #'   \code{c(alpha = 800, beta = -380, c = 0.85, lambda = -3, phi = -2, tau = 6, delta = 3)}.
-#' @param method A character string specifying the optimization method to use with \code{optim()}.
-#'   The default is \code{"L-BFGS-B"}, which allows for parameter constraints.
+#' @param lower_lim A named numeric vector specifying the lower bound for each parameter.
+#'   Default is \code{c(alpha = 300, beta = -750, c = 0.1, lambda = -10, phi = -10, tau = min(time), delta = min(time))}.
+#' @param upper_lim A named numeric vector specifying the upper bound for each parameter.
+#'   Default is \code{c(alpha = 2000, beta = -10, c = 2.0, lambda = -0.1, phi = -0.1, tau = max(time), delta = max(time))}.
+#' @param method A character string specifying the optimization method to use with \code{optim()}. The default is
+#'   \code{"L-BFGS-B"}, which allows for parameter constraints.
 #'
 #' @return A list containing:
 #'   \describe{
-#'     \item{data}{The input data (after removing missing cases) and fitted values
-#'     from the dual logistic model.}
+#'     \item{data}{A data frame with columns for time, the original RRi values, and the fitted values obtained from the dual-logistic model.}
 #'     \item{method}{The optimization method used.}
 #'     \item{parameters}{The estimated parameters from the model.}
 #'     \item{objective_value}{The final value of the objective (Huber loss) function.}
@@ -42,17 +45,26 @@
 #'   }
 #'
 #' @details
-#' The function first cleans the input data by removing missing cases, then defines the dual-logistic model,
-#' and an objective function based on the Huber loss (with a default \eqn{\delta} = 50 ms). The parameter
-#' optimization is performed using \code{optim()} with box constraints (via \code{L-BFGS-B}) to ensure that
-#' the parameters remain within physiologically plausible limits. The default lower and upper bounds are set
-#' based on typical RRi signal ranges.
+#' The function first removes any missing cases from the input data and then defines the dual-logistic model,
+#' which represents the dynamic behavior of RR intervals during exercise and recovery. The objective function
+#' is based on the Huber loss (with a default threshold of 50 ms), which provides robustness against outliers by
+#' penalizing large deviations less harshly than the standard squared error. This objective function quantifies
+#' the discrepancy between the observed RRi values and those predicted by the model.
+#'
+#' Parameter optimization is performed using \code{optim()} with box constraints when the \code{"L-BFGS-B"} method is
+#' used. These constraints ensure that the parameters remain within physiologically plausible ranges. For other optimization
+#' methods, the bounds are ignored by setting the lower limit to \code{-Inf} and the upper limit to \code{Inf}.
+#'
+#' It is important to note that the default starting parameters and bounds provided in the function are general
+#' guidelines and may not be optimal for every dataset or experimental scenario. Users are encouraged to customize the
+#' starting parameters (\code{start_params}) and, if necessary, the lower and upper bounds (\code{lower_lim} and \code{upper_lim})
+#' based on the specific characteristics of their RRi signal. This customization is crucial for achieving robust convergence
+#' and accurate parameter estimates in diverse applications.
 #'
 #' @references
 #' Castillo-Aguilar, et al. (2025). *Enhancing Cardiovascular Monitoring: A Non-linear Model for Characterizing RR Interval Fluctuations in Exercise and Recovery*. **Scientific Reports**, 15(1), 8628.
 #'
 #' @examples
-#'
 #' true_params <- c(alpha = 800, beta = -300, c = 0.80,
 #'                  lambda = -3, phi = -1, tau = 6, delta = 3)
 #'
@@ -82,6 +94,12 @@ estimate_RRi_curve <- function(time, RRi,
                                start_params = c(alpha = 800, beta = -380, c = 0.85,
                                                 lambda = -3, phi = -2,
                                                 tau = 6, delta = 3),
+                               lower_lim = c(alpha = 300, beta = -750, c = 0.1,
+                                              lambda = -10, phi = -10,
+                                              tau = min(time), delta = min(time)),
+                               upper_lim = c(alpha = 2000, beta = -10, c = 2.0,
+                                              lambda = -0.1, phi = -0.1,
+                                              tau = max(time), delta = max(time)),
                                method = "L-BFGS-B") {
   # Input checks:
   if (!is.numeric(time) || !is.numeric(RRi))
@@ -102,16 +120,10 @@ estimate_RRi_curve <- function(time, RRi,
     sum(loss)
   }
 
-  # Use constraints in case of "L-BFGS-B" method
-  lower_lim <- -Inf;
-  upper_lim <- Inf;
-  if (method == "L-BFGS-B") {
-    lower_lim <- c(alpha = 300, beta = -750, c = 0.1,
-                   lambda = -10, phi = -10,
-                   tau = min(time), delta = min(time))
-    upper_lim <- c(alpha = 2000, beta = -10, c = 2.0,
-                   lambda = -0.1, phi = -0.1,
-                   tau = max(time), delta = max(time))
+  # Ignore constraints in cases other than "L-BFGS-B" method
+  if (method != "L-BFGS-B") {
+    lower_lim <- -Inf;
+    upper_lim <- Inf;
   }
 
   # Use optim() with box constraints:
