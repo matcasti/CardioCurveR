@@ -1,3 +1,3 @@
 ## Resubmission
 
-Software names were single quoted as suggested in revision process.
+Adjusted description section to fit CRAN requisites.
