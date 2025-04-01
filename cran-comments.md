@@ -1,5 +1,3 @@
-## R CMD check results
+## Resubmission
 
-0 errors | 0 warnings | 0 notes
-
-* This is a new release.
+Software names were single quoted as suggested in revision process.
