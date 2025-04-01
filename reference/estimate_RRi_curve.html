@@ -60,6 +60,10 @@ that the optimization process is robust even in the presence of noisy or ectopic
 <span>  <span class="va">RRi</span>,</span>
 <span>  start_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">800</span>, beta <span class="op">=</span> <span class="op">-</span><span class="fl">380</span>, c <span class="op">=</span> <span class="fl">0.85</span>, lambda <span class="op">=</span> <span class="op">-</span><span class="fl">3</span>, phi <span class="op">=</span> <span class="op">-</span><span class="fl">2</span>, tau <span class="op">=</span> <span class="fl">6</span>,</span>
 <span>    delta <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span>
+<span>  lower_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">300</span>, beta <span class="op">=</span> <span class="op">-</span><span class="fl">750</span>, c <span class="op">=</span> <span class="fl">0.1</span>, lambda <span class="op">=</span> <span class="op">-</span><span class="fl">10</span>, phi <span class="op">=</span> <span class="op">-</span><span class="fl">10</span>, tau <span class="op">=</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span>, delta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  upper_lim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">2000</span>, beta <span class="op">=</span> <span class="op">-</span><span class="fl">10</span>, c <span class="op">=</span> <span class="fl">2</span>, lambda <span class="op">=</span> <span class="op">-</span><span class="fl">0.1</span>, phi <span class="op">=</span> <span class="op">-</span><span class="fl">0.1</span>, tau <span class="op">=</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span>, delta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  method <span class="op">=</span> <span class="st">"L-BFGS-B"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -77,20 +81,29 @@ that the optimization process is robust even in the presence of noisy or ectopic
 
 
 <dt id="arg-start-params">start_params<a class="anchor" aria-label="anchor" href="#arg-start-params"></a></dt>
-<dd><p>A named numeric vector of initial parameter estimates. Default is
+<dd><p>A named numeric vector or list of initial parameter estimates. Default is
 <code>c(alpha = 800, beta = -380, c = 0.85, lambda = -3, phi = -2, tau = 6, delta = 3)</code>.</p></dd>
 
 
+<dt id="arg-lower-lim">lower_lim<a class="anchor" aria-label="anchor" href="#arg-lower-lim"></a></dt>
+<dd><p>A named numeric vector specifying the lower bound for each parameter.
+Default is <code>c(alpha = 300, beta = -750, c = 0.1, lambda = -10, phi = -10, tau = min(time), delta = min(time))</code>.</p></dd>
+
+
+<dt id="arg-upper-lim">upper_lim<a class="anchor" aria-label="anchor" href="#arg-upper-lim"></a></dt>
+<dd><p>A named numeric vector specifying the upper bound for each parameter.
+Default is <code>c(alpha = 2000, beta = -10, c = 2.0, lambda = -0.1, phi = -0.1, tau = max(time), delta = max(time))</code>.</p></dd>
+
+
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
-<dd><p>A character string specifying the optimization method to use with <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">optim()</a></code>.
-The default is <code>"L-BFGS-B"</code>, which allows for parameter constraints.</p></dd>
+<dd><p>A character string specifying the optimization method to use with <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">optim()</a></code>. The default is
+<code>"L-BFGS-B"</code>, which allows for parameter constraints.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A list containing:</p><dl><dt>data</dt>
-<dd><p>The input data (after removing missing cases) and fitted values
-from the dual logistic model.</p></dd>
+<dd><p>A data frame with columns for time, the original RRi values, and the fitted values obtained from the dual-logistic model.</p></dd>
 
 <dt>method</dt>
 <dd><p>The optimization method used.</p></dd>
@@ -110,7 +123,7 @@ from the dual logistic model.</p></dd>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The dual-logistic model, as described in Castillo-Aguilar et al. (2025), is defined as:</p>
 <p>$$
-\text{RRi}(t) = \alpha + \frac{\beta}{1 + e^{\lambda (t - \tau)}} + \frac{-c \cdot \beta}{1 + e^{\phi (t - \tau - \delta)}}
+RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda (t - \tau)}} + \frac{-c \cdot \beta}{1 + e^{\phi (t - \tau - \delta)}}
 $$</p>
 <p>where:</p>
 <dl><dt>\(\alpha\)</dt>
@@ -135,11 +148,19 @@ $$</p>
 <dd><p>shifts the recovery phase in time relative to \(\tau\).</p></dd>
 
 
-</dl><p>The function first cleans the input data by removing missing cases, then defines the dual-logistic model,
-and an objective function based on the Huber loss (with a default \(\delta\) = 50 ms). The parameter
-optimization is performed using <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">optim()</a></code> with box constraints (via <code>L-BFGS-B</code>) to ensure that
-the parameters remain within physiologically plausible limits. The default lower and upper bounds are set
-based on typical RRi signal ranges.</p>
+</dl><p>The function first removes any missing cases from the input data and then defines the dual-logistic model,
+which represents the dynamic behavior of RR intervals during exercise and recovery. The objective function
+is based on the Huber loss (with a default threshold of 50 ms), which provides robustness against outliers by
+penalizing large deviations less harshly than the standard squared error. This objective function quantifies
+the discrepancy between the observed RRi values and those predicted by the model.</p>
+<p>Parameter optimization is performed using <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">optim()</a></code> with box constraints when the <code>"L-BFGS-B"</code> method is
+used. These constraints ensure that the parameters remain within physiologically plausible ranges. For other optimization
+methods, the bounds are ignored by setting the lower limit to <code>-Inf</code> and the upper limit to <code>Inf</code>.</p>
+<p>It is important to note that the default starting parameters and bounds provided in the function are general
+guidelines and may not be optimal for every dataset or experimental scenario. Users are encouraged to customize the
+starting parameters (<code>start_params</code>) and, if necessary, the lower and upper bounds (<code>lower_lim</code> and <code>upper_lim</code>)
+based on the specific characteristics of their RRi signal. This customization is crucial for achieving robust convergence
+and accurate parameter estimates in diverse applications.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -148,8 +169,7 @@ based on typical RRi signal ranges.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">true_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">800</span>, beta <span class="op">=</span> <span class="op">-</span><span class="fl">300</span>, c <span class="op">=</span> <span class="fl">0.80</span>,</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">true_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">800</span>, beta <span class="op">=</span> <span class="op">-</span><span class="fl">300</span>, c <span class="op">=</span> <span class="fl">0.80</span>,</span></span>
 <span class="r-in"><span>                 lambda <span class="op">=</span> <span class="op">-</span><span class="fl">3</span>, phi <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, tau <span class="op">=</span> <span class="fl">6</span>, delta <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">time_vec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">20</span>, by <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span></span>
