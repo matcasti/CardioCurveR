@@ -34,8 +34,7 @@ which is critical for accurate cardiovascular monitoring and analysis.
 The model is defined as:
 
 \deqn{
-RRi(t) = \alpha + \frac{\beta}{1 + \exp\{\lambda (t-\tau)\}} +
-\frac{-c \cdot \beta}{1 + \exp\{\phi (t-\tau-\delta)\}},
+RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda (t - \tau)}} + \frac{-c \cdot \beta}{1 + e^{\phi (t - \tau - \delta)}}
 }
 
 where:

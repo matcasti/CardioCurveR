@@ -35,7 +35,7 @@
 #' @param method A character string specifying the optimization method to use with \code{optim()}. The default is
 #'   \code{"L-BFGS-B"}, which allows for parameter constraints.
 #'
-#' @return A list containing:
+#' @returns A list containing:
 #'   \describe{
 #'     \item{data}{A data frame with columns for time, the original RRi values, and the fitted values obtained from the dual-logistic model.}
 #'     \item{method}{The optimization method used.}

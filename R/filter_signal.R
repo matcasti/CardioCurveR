@@ -17,7 +17,7 @@
 #' @param abs An integer indicating the number of samples at both the beginning and end of the filtered signal
 #'   to be trimmed (set to \code{NA}) to remove edge artifacts. Default is \code{5}.
 #'
-#' @return A numeric vector of the same length as \code{x} containing the denoised RRi signal, with the first and last
+#' @returns A numeric vector of the same length as \code{x} containing the denoised RRi signal, with the first and last
 #'   \code{abs} values set to \code{NA}.
 #'
 #' @details

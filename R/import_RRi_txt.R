@@ -30,7 +30,7 @@
 #'   this are set to \code{NA}. Default is \code{2000}.
 #' @param ... Additional arguments passed to \code{readLines()}.
 #'
-#' @return A data frame with two columns: \code{time} and \code{RRi}. The \code{time} column is computed as the
+#' @returns A data frame with two columns: \code{time} and \code{RRi}. The \code{time} column is computed as the
 #'   cumulative sum of the RRi values divided by 60000 (to convert to minutes), and \code{RRi} contains the cleaned signal.
 #'
 #' @details

@@ -28,7 +28,7 @@ print.boot_RRi_fit <- function(x, ...) {
 #' measures. If FALSE then uses mean and standard deviation instead.
 #' @param ... Additional arguments (unused).
 #'
-#' @return A list with summary statistics for each parameter.
+#' @returns A list with summary statistics for each parameter.
 #'
 #' @importFrom data.table as.data.table transpose `:=` .SD
 #' @importFrom stats median IQR quantile sd

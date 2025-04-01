@@ -9,8 +9,7 @@
 #' The model is defined as:
 #'
 #' \deqn{
-#' RRi(t) = \alpha + \frac{\beta}{1 + \exp\{\lambda (t-\tau)\}} +
-#' \frac{-c \cdot \beta}{1 + \exp\{\phi (t-\tau-\delta)\}},
+#' RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda (t - \tau)}} + \frac{-c \cdot \beta}{1 + e^{\phi (t - \tau - \delta)}}
 #' }
 #'
 #' where:
@@ -37,7 +36,7 @@
 #'   \item{delta}{The time offset for the recovery phase relative to \code{tau}.}
 #' }
 #'
-#' @return A numeric vector containing the modeled RRi values at the times specified by \code{t}.
+#' @returns A numeric vector containing the modeled RRi values at the times specified by \code{t}.
 #'
 #' @details
 #' This dual-logistic model is defined following the approach described in Castillo-Aguilar et al.

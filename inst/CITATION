@@ -1,0 +1,22 @@
+c(
+  bibentry(
+    bibtype  = "Article",
+    title    = "Enhancing cardiovascular monitoring: a non-linear model for characterizing RR interval fluctuations in exercise and recovery",
+    author   = "Matías Castillo-Aguilar, Diego Mabe-Castro, David Medina, Cristian Núñez-Espinosa",
+    journal  = "Scientific Reports",
+    year     = 2025,
+    volume   = 15,
+    number   = 1,
+    pages    = 8628,
+    doi      = "10.1038/s41598-025-93654-6",
+    header = "Original paper's citation with the described statistical model."
+  ),
+  bibentry(
+    bibtype  = "Manual",
+    title    = "CardioCurveR: Nonlinear Modeling of R-R Interval Dynamics",
+    author   = person("Matías", "Castillo-Aguilar", , "m99castillo@gmail.com", role = c("aut", "cre", "cph"), comment = c(ORCID = "0000-0001-7291-247X")),
+    year     = "2025",
+    url      = "https://github.com/matcasti/CardioCurveR",
+    header  = "R package's citation with the specific R-R interval modeling tools."
+  )
+)

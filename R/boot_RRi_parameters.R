@@ -19,7 +19,7 @@
 #'   bootstrap sample. If specified, it overrides \code{n_samples} by computing the number as \code{floor(nrow(fit$data) * prop_of_samples)}.
 #' @param nboot A numeric value indicating the number of bootstrap replicates to perform. The default is \code{100}.
 #'
-#' @return An object of class \code{"boot_RRi_fit"}, which is a data.table with one row per bootstrap replicate.
+#' @returns An object of class \code{"boot_RRi_fit"}, which is a data.table with one row per bootstrap replicate.
 #'   Each row contains the estimated parameters from that bootstrap sample.
 #'
 #' @details

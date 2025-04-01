@@ -27,15 +27,15 @@ print.RRi_fit <- function(x, ...) {
 #' @param object An object of class "RRi_fit".
 #' @param ... Additional arguments (unused).
 #'
-#' @return A list with the following components:
-#' \item{method}{The optimization method used.}
-#' \item{parameters}{The estimated parameters from the model.}
-#' \item{objective_value}{The final value of the objective (Huber loss) function.}
-#' \item{convergence}{An integer code indicating convergence (0 indicates success).}
-#' \item{RSS}{Residual sum of squares.}
-#' \item{TSS}{Total sum of squares of the observed RRi values.}
-#' \item{R_squared}{Coefficient of determination.}
-#' \item{n}{The number of observations used.}
+#' @returns A list with the following components:
+#'   \item{method}{The optimization method used.}
+#'   \item{parameters}{The estimated parameters from the model.}
+#'   \item{objective_value}{The final value of the objective (Huber loss) function.}
+#'   \item{convergence}{An integer code indicating convergence (0 indicates success).}
+#'   \item{RSS}{Residual sum of squares.}
+#'   \item{TSS}{Total sum of squares of the observed RRi values.}
+#'   \item{R_squared}{Coefficient of determination.}
+#'   \item{n}{The number of observations used.}
 #'
 #' @export
 summary.RRi_fit <- function(object, ...) {

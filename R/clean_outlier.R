@@ -27,7 +27,7 @@
 #'   \code{"gaussian"}, \code{"uniform"}, or \code{"loess"} (default is \code{"gaussian"}).
 #' @param seed An integer to set the random seed for reproducibility of the replacement process (default is 123).
 #'
-#' @return A \code{numeric} vector containing the cleaned RRi signal.
+#' @returns A \code{numeric} vector containing the cleaned RRi signal.
 #'
 #' @examples
 #'
