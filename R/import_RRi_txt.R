@@ -9,13 +9,15 @@
 #'
 #' The expected data format is a text file with one RR interval per line, for example:
 #'
-#' 1312
-#' 788
-#' 878
-#' ...
-#' 813
-#' 788
-#' 783
+#' |\[some-file.txt\]:|
+#' |------|
+#' | 1312 |
+#' | 788  |
+#' | 878  |
+#' | ...  |
+#' | 813  |
+#' | 788  |
+#' | 783  |
 #'
 #' @param file A character string specifying the path to the text file containing the RRi signal.
 #' @param remove_ectopic A logical value indicating whether to remove ectopic beats using the

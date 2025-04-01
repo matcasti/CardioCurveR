@@ -23,6 +23,8 @@ ectopics <- sample.int(n = n_samples, size = floor(n_samples * 0.05))
 ## We'll add a doubled or half value to selected ectopic data points
 RRi_simulated[ectopics] <- RRi_simulated[ectopics] * c(0.3, 1.7)
 
+RRi_simulated <- round(RRi_simulated)
+
 ## We'll save this as a data.frame
 sim_RRi <- data.frame(time, RRi_simulated)
 

@@ -43,15 +43,17 @@ and it can further filter the signal using \code{filter_signal()}. A time variab
 sum of the RR intervals (converted to minutes), and the processed data is returned as a data frame.
 }
 \details{
-The expected data format is a text file with one RR interval per line, for example:
+The expected data format is a text file with one RR interval per line, for example:\tabular{l}{
+   [some-file.txt]: \cr
+   1312 \cr
+   788 \cr
+   878 \cr
+   ... \cr
+   813 \cr
+   788 \cr
+   783 \cr
+}
 
-1312
-788
-878
-...
-813
-788
-783
 
 The function begins by checking that the input \code{file} is provided and that the options \code{remove_ectopic}
 and \code{filter_noise} are logical values of length 1. It then reads the file using \code{readLines()},

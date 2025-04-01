@@ -9,7 +9,7 @@
 #' The dual-logistic model, as described in Castillo-Aguilar et al. (2025), is defined as:
 #'
 #' \deqn{
-#' \text{RRi}(t) = \alpha + \frac{\beta}{1 + e^{\lambda (t - \tau)}} - \frac{c \, \beta}{1 + e^{\phi (t - \tau - \delta)}}
+#' \text{RRi}(t) = \alpha + \frac{\beta}{1 + e^{\lambda (t - \tau)}} + \frac{-c \cdot \beta}{1 + e^{\phi (t - \tau - \delta)}}
 #' }
 #'
 #' where:

@@ -30,7 +30,7 @@ in the CardioCurveR package.
 The dual-logistic model is defined as:
 
 \deqn{
-RRi(t) = \alpha + \frac{\beta}{1 + \exp\{\lambda (t - \tau)\}} - \frac{c \, \beta}{1 + \exp\{\phi (t - \tau - \delta)\}},
+RRi(t) = \alpha + \frac{\beta}{1 + \exp\{\lambda (t - \tau)\}} + \frac{-c \cdot \beta}{1 + \exp\{\phi (t - \tau - \delta)\}},
 }
 
 where \eqn{\alpha} is the baseline RRi level, \eqn{\beta} controls the amplitude of the drop,

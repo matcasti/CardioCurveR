@@ -6,7 +6,7 @@
 #' phase, following the methodology described by Castillo-Aguilar et al. (2025):
 #'
 #' \deqn{
-#' RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda (t-\tau)}} - \frac{c\,\beta}{1 + e^{\phi (t-\tau-\delta)}}
+#' RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda (t-\tau)}} + \frac{-c \cdot \beta}{1 + e^{\phi (t-\tau-\delta)}}
 #' }
 #'
 #' In this model, \eqn{\alpha} denotes the baseline RRi, \eqn{\beta} controls the amplitude of the drop,
