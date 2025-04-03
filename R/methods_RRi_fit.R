@@ -7,6 +7,10 @@
 #' @param x An object of class "RRi_fit".
 #' @param ... Additional arguments passed to print.
 #'
+#' @returns A message (of class `NULL`) with optimization method used, estimated parameters,
+#' objective value from the Hubber loss algorithm and the convergence code
+#' of the optimization method.
+#'
 #' @export
 print.RRi_fit <- function(x, ...) {
   cat("RRi_fit Object\n")
@@ -64,6 +68,10 @@ summary.RRi_fit <- function(object, ...) {
 #' @param x An object of class "summary.RRi_fit".
 #' @param ... Additional arguments.
 #'
+#' @returns A message (of class `NULL`) with optimization method used, estimated parameters,
+#' objective value from the Hubber loss algorithm, performance statistics of
+#' the RRi model and the convergence code of the optimization method.
+#'
 #' @export
 print.summary.RRi_fit <- function(x, ...) {
   cat("Summary of RRi_fit Object\n")
@@ -92,6 +100,9 @@ print.summary.RRi_fit <- function(x, ...) {
 #'
 #' @import ggplot2
 #' @importFrom gridExtra grid.arrange
+#'
+#' @returns A ggplot object with a panel of diagnostic plots for the fitted
+#' dual-logistic model.
 #'
 #' @export
 plot.RRi_fit <- function(x, ...) {

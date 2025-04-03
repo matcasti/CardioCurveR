@@ -7,6 +7,10 @@
 #' @param x An object of class "boot_RRi_fit".
 #' @param ... Additional arguments passed to \code{print}.
 #'
+#' @returns A message (of class `NULL`) with the number of bootstrap replicates and a preview
+#' of  the first 6 bootstrap samples. Additionally, returns the input object
+#' invisibly.
+#'
 #' @importFrom utils head
 #'
 #' @export
@@ -20,12 +24,14 @@ print.boot_RRi_fit <- function(x, ...) {
 
 #' Summary method for boot_RRi_fit objects
 #'
-#' Computes summary statistics for each estimated parameter across the bootstrap replicates.
-#' For each parameter, the summary includes the mean, standard deviation, and the 2.5\%, 50\%, and 97.5\% quantiles.
+#' Computes summary statistics for each estimated parameter across the
+#' bootstrap replicates. For each parameter, the summary includes the mean,
+#' standard deviation, and the 2.5\%, 50\%, and 97.5\% quantiles.
 #'
 #' @param object An object of class "boot_RRi_fit".
-#' @param robust Logical. If TRUE (default) then uses median and MAD as centrality and dispersion
-#' measures. If FALSE then uses mean and standard deviation instead.
+#' @param robust Logical. If TRUE (default) then uses median and MAD as
+#' centrality and dispersion measures. If FALSE then uses mean and standard
+#' deviation instead.
 #' @param ... Additional arguments (unused).
 #'
 #' @returns A list with summary statistics for each parameter.
@@ -69,11 +75,15 @@ summary.boot_RRi_fit <- function(object, robust = TRUE, ...) {
 
 #' Print summary of boot_RRi_fit objects
 #'
-#' Prints a human-readable summary of the bootstrap RRi model parameter estimates,
-#' including the mean, standard deviation, and selected quantiles for each parameter.
+#' Prints a human-readable summary of the bootstrap RRi model parameter
+#' estimates, including the mean, standard deviation, and selected quantiles
+#' for each parameter.
 #'
 #' @param x An object of class "summary.boot_RRi_fit".
 #' @param ... Additional arguments.
+#'
+#' @returns A message (of class `NULL`) with bootstrapped parameter estimates, standard
+#' errors (SE) and 95% quantile-based confidence intervals.
 #'
 #' @export
 print.summary.boot_RRi_fit <- function(x, ...) {
@@ -91,14 +101,18 @@ print.summary.boot_RRi_fit <- function(x, ...) {
 
 #' Plot method for boot_RRi_fit objects
 #'
-#' Generates a panel of density plots to visualize the bootstrap distributions of the RRi model parameters.
-#' The method converts the bootstrap results to long format and creates one density plot per parameter.
+#' Generates a panel of density plots to visualize the bootstrap distributions
+#' of the RRi model parameters. The method converts the bootstrap results to
+#' long format and creates one density plot per parameter.
 #'
 #' @param x An object of class "boot_RRi_fit".
 #' @param ... Additional arguments (unused).
 #'
 #' @import ggplot2
 #' @importFrom data.table melt
+#'
+#' @returns A ggplot object with panel of density plots to visualize the
+#' bootstrap distributions of the RRi model parameters.
 #'
 #' @export
 plot.boot_RRi_fit <- function(x, ...) {

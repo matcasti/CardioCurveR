@@ -32,7 +32,7 @@
 #' corresponds to a bootstrap replicate.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(CardioCurveR)
 #' library(data.table)
 #'

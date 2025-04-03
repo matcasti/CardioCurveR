@@ -49,7 +49,7 @@ re-estimates the model parameters using \code{estimate_RRi_curve()}. The output 
 corresponds to a bootstrap replicate.
 }
 \examples{
-\dontrun{
+\donttest{
 library(CardioCurveR)
 library(data.table)
 

@@ -9,8 +9,9 @@
 \arguments{
 \item{object}{An object of class "boot_RRi_fit".}
 
-\item{robust}{Logical. If TRUE (default) then uses median and MAD as centrality and dispersion
-measures. If FALSE then uses mean and standard deviation instead.}
+\item{robust}{Logical. If TRUE (default) then uses median and MAD as
+centrality and dispersion measures. If FALSE then uses mean and standard
+deviation instead.}
 
 \item{...}{Additional arguments (unused).}
 }
@@ -18,6 +19,7 @@ measures. If FALSE then uses mean and standard deviation instead.}
 A list with summary statistics for each parameter.
 }
 \description{
-Computes summary statistics for each estimated parameter across the bootstrap replicates.
-For each parameter, the summary includes the mean, standard deviation, and the 2.5\\%, 50\\%, and 97.5\\% quantiles.
+Computes summary statistics for each estimated parameter across the
+bootstrap replicates. For each parameter, the summary includes the mean,
+standard deviation, and the 2.5\\%, 50\\%, and 97.5\\% quantiles.
 }

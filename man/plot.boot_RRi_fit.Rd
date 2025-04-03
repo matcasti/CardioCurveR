@@ -11,7 +11,12 @@
 
 \item{...}{Additional arguments (unused).}
 }
+\value{
+A ggplot object with panel of density plots to visualize the
+bootstrap distributions of the RRi model parameters.
+}
 \description{
-Generates a panel of density plots to visualize the bootstrap distributions of the RRi model parameters.
-The method converts the bootstrap results to long format and creates one density plot per parameter.
+Generates a panel of density plots to visualize the bootstrap distributions
+of the RRi model parameters. The method converts the bootstrap results to
+long format and creates one density plot per parameter.
 }

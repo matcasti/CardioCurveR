@@ -11,6 +11,11 @@
 
 \item{...}{Additional arguments passed to print.}
 }
+\value{
+A message (of class \code{NULL}) with optimization method used, estimated parameters,
+objective value from the Hubber loss algorithm and the convergence code
+of the optimization method.
+}
 \description{
 Displays a concise summary of the RRi_fit object produced by
 \code{estimate_RRi_curve()}. The printed output includes the optimization method,

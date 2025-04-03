@@ -11,6 +11,10 @@
 
 \item{...}{Additional arguments (unused).}
 }
+\value{
+A ggplot object with a panel of diagnostic plots for the fitted
+dual-logistic model.
+}
 \description{
 Produces a panel of diagnostic plots for the fitted dual-logistic model.
 The output includes a plot of the observed RRi signal with the fitted curve overlay,

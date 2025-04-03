@@ -11,6 +11,11 @@
 
 \item{...}{Additional arguments passed to \code{print}.}
 }
+\value{
+A message (of class \code{NULL}) with the number of bootstrap replicates and a preview
+of  the first 6 bootstrap samples. Additionally, returns the input object
+invisibly.
+}
 \description{
 Displays a concise summary of the bootstrap RRi model parameter estimates.
 The printed output shows the number of bootstrap replicates and a preview

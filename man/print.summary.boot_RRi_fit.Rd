@@ -11,7 +11,12 @@
 
 \item{...}{Additional arguments.}
 }
+\value{
+A message (of class \code{NULL}) with bootstrapped parameter estimates, standard
+errors (SE) and 95\% quantile-based confidence intervals.
+}
 \description{
-Prints a human-readable summary of the bootstrap RRi model parameter estimates,
-including the mean, standard deviation, and selected quantiles for each parameter.
+Prints a human-readable summary of the bootstrap RRi model parameter
+estimates, including the mean, standard deviation, and selected quantiles
+for each parameter.
 }
