@@ -108,7 +108,7 @@ corresponds to a bootstrap replicate.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/matcasti/CardioCurveR" class="external-link">CardioCurveR</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -128,7 +128,17 @@ corresponds to a bootstrap replicate.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># View the bootstrap estimates</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">boot_fit</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bootstrap RRi Parameter Estimates</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of bootstrap replicates: 100 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Preview of estimated parameters (first 6 replicates):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   nboot    alpha      beta         c    lambda       phi      tau    delta</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1 800.5251 -353.5449 0.8870946 -3.062566 -1.622490 5.968664 3.120885</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     2 800.4201 -339.0531 0.7224601 -3.243566 -2.183843 5.952733 2.974459</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     3 800.4500 -346.2715 0.7425458 -3.314643 -2.128720 5.971596 2.973739</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4     4 799.3835 -337.8819 0.6500205 -3.020092 -2.984357 5.951567 2.904101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5     5 801.1221 -347.4734 0.7006175 -3.203447 -2.364417 5.969239 2.886365</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     6 803.9053 -346.8873 0.7399056 -3.253758 -2.202961 5.961412 2.990922</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
