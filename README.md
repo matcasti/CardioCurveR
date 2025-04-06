@@ -220,24 +220,15 @@ $$
 RRi(t) = \alpha + \frac{\beta}{1 + e^{\lambda (t-\tau)}} - \frac{c\,\beta}{1 + e^{\phi (t-\tau-\delta)}}
 $$
 
-**Purpose:** Its primary role is to calculate the predicted R-R interval
-value(s) based on the dual-logistic model for a given set of time points
-and a specific set of parameter values.
+Its primary role is to calculate the predicted R-R interval value(s)
+based on the dual-logistic model for a given set of time points and a
+specific set of parameter values.
 
-**Inputs:**
-
-- `time`: A numeric vector representing the time points at which you
-  want to calculate the RRi values.
-- `params`: A named vector or list containing the values for the seven
-  model parameters: `alpha`, `beta`, `lambda`, `tau`, `c`, `phi`, and
-  `delta`. The names must match exactly. **Output:** It returns a
-  numeric vector of the same length as the input `time` vector,
-  containing the calculated RRi values according to the model and the
-  provided parameters. **Usage:** This function is used internally by
-  the estimation function (`estimate_RRi_curve`) during the optimization
-  process. It’s also extremely useful for users to simulate theoretical
-  curves (as shown in the example) or to generate predicted RRi values
-  once a model has been fitted.
+This function is used internally by the estimation function
+(`estimate_RRi_curve`) during the optimization process. It’s also
+extremely useful for users to simulate theoretical curves (as shown in
+the example) or to generate predicted RRi values once a model has been
+fitted. See `?dual_logistic()` for its documentation.
 
 ### `estimate_RRi_curve()`: Estimating Model Parameters from Data
 
@@ -245,70 +236,28 @@ This is arguably the central function for users analyzing their own
 data. It takes empirical RRi data and finds the optimal set of
 parameters for the `dual_logistic` model that best describes that data.
 
-**Purpose:** To perform the non-linear regression, estimating the seven
-parameters ($\alpha, \beta, \lambda, \tau, c, \phi, \delta$) of the
-dual-logistic model based on observed time and RRi data.
+This function looks to perform the non-linear regression, estimating the
+seven parameters ($\alpha, \beta, \lambda, \tau, c, \phi, \delta$) of
+the dual-logistic model based on observed time and RRi data.
 
-**Methodology:**
-
-- **Optimization:** It employs R’s powerful `optim()` function for
-  numerical optimization. By default, it uses the `"L-BFGS-B"` method,
-  which is a quasi-Newton algorithm capable of handling box constraints
-  (lower and upper bounds) on the parameters. This is important for
-  ensuring physiologically plausible parameter estimates (e.g.,
-  constraining $\alpha$ to be positive).
-- **Loss Function:** Instead of minimizing the standard sum of squared
-  errors (which is sensitive to outliers), this function minimizes the
-  **Huber loss**. The Huber loss function is a robust alternative that
-  behaves like the squared error loss for small errors but like the
-  absolute error loss for large errors. This makes the parameter
-  estimation less influenced by potential outliers or unusually noisy
-  data points that might still be present after initial cleaning.
-
-**Inputs:**
-
-- `time`: A numeric vector of time points corresponding to the RRi
-  measurements.
-- `RRi`: A numeric vector of the observed R-R interval measurements.
-  **Output:** It returns a list-like object containing detailed results
-  of the estimation, including the estimated `parameters`,
-  goodness-of-fit statistics (like R-squared, RMSE, MAPE), information
-  about the optimization convergence, and potentially the residuals.
+It employs R’s powerful `optim()` function for numerical optimization.
+By default, it uses the `"L-BFGS-B"` method, which is a quasi-Newton
+algorithm capable of handling box constraints (lower and upper bounds)
+on the parameters. This is important for ensuring physiologically
+plausible parameter estimates (e.g., constraining $\alpha$ to be
+positive). See `?estimate_RRi_curve()` for its documentation.
 
 ### `filter_signal()`: Pre-processing via Signal Filtering
 
 This function handles the crucial step of noise reduction in the raw RRi
 signal before modeling.
 
-**Purpose:** To apply a digital low-pass filter to the RRi time series
-to smooth out high-frequency noise while preserving the underlying
-physiological trend.
-
-**Methodology:**
-
-- **Filter Type:** It uses a **Butterworth filter**, known for its flat
-  response in the frequency range it allows through (the passband),
-  avoiding ripples.
-- **Zero-Phase Filtering:** It applies the filter using a
-  forward-and-backward pass (`filtfilt` methodology). This clever
-  technique effectively cancels out the phase distortion (time delay)
-  that a standard one-way filter would introduce, which is critical for
-  accurate temporal parameter estimation.
-- **Edge Effect Mitigation:** Recognising that digital filters can
-  produce unreliable values at the very start and end of the signal (due
-  to initialization effects), the function typically includes a step to
-  **trim** a specified number of data points from both ends of the
-  *filtered* signal. The corresponding time points are also removed to
-  maintain alignment. Users should be aware that this slightly shortens
-  the time series being analyzed.
-
-**Inputs:**
-
-- `RRi`: The numeric vector of the RRi signal to be filtered.
-- Other arguments (check function documentation with `?filter_signal`)
-  likely control the filter order, cutoff frequency, and the number of
-  points to trim. **Output:** A numeric vector containing the filtered
-  RRi signal (potentially shorter than the input due to trimming).
+The main purpose of this function is to apply a digital low-pass filter
+to the RRi time series to smooth out high-frequency noise while
+preserving the underlying physiological trend. It uses a **Butterworth
+filter**, known for its flat response in the frequency range it allows
+through (the passband), avoiding ripples. See `?filter_signal()` for its
+documentation.
 
 ### `clean_outlier()`: Adaptive Cleaning of Ectopic Beats and Noise
 
@@ -316,47 +265,9 @@ This function provides a sophisticated method for identifying and
 correcting outlier points in the RRi signal, often corresponding to
 ectopic beats or significant measurement errors.
 
-**Purpose:** To detect physiologically implausible RRi values (outliers)
+This function detects physiologically implausible RRi values (outliers)
 and replace them with more reasonable estimates based on the local trend
-of the signal.
-
-**Methodology:**
-
-1.  **Trend Estimation:** It first fits a **LOESS** (Locally Estimated
-    Scatterplot Smoothing) model to the RRi data. LOESS is a
-    non-parametric technique that fits simple polynomial models to
-    localized subsets of the data, providing a flexible way to capture
-    the underlying, possibly non-linear, trend without assuming a global
-    structure like the dual-logistic model yet.
-2.  **Residual Calculation:** It calculates the residuals, which are the
-    differences between the original RRi values and the values predicted
-    by the LOESS smooth curve.
-3.  **Outlier Detection:** Outliers are identified based on these
-    residuals. A point is flagged as an outlier if its residual exceeds
-    a certain threshold. This threshold is typically defined as a
-    multiple (e.g., 3 or 4) of a robust measure of the spread of the
-    residuals, usually the **Median Absolute Deviation (MAD)**. Using
-    MAD makes the detection process itself robust to the presence of
-    outliers (unlike standard deviation).
-4.  **Outlier Replacement:** Detected outliers are replaced using one of
-    several user-selectable methods:
-    - `gaussian`: Replace with a random value drawn from a Gaussian
-      distribution centered on the LOESS prediction, with variance
-      estimated from the non-outlier residuals.
-    - `uniform`: Replace with a random value drawn from a uniform
-      distribution around the LOESS prediction.
-    - `loess`: Simply replace with the value predicted by the LOESS
-      smooth curve at that time point. The choice of method depends on
-      whether the user prefers a smoother replacement or wants to retain
-      some local variability.
-
-**Inputs:**
-
-- `RRi`: The numeric vector of the RRi signal containing potential
-  outliers.
-- Arguments to control the LOESS span, outlier threshold (multiple of
-  MAD), and replacement method (check `?clean_outlier`). **Output:** A
-  numeric vector of the RRi signal with identified outliers replaced.
+of the signal. See `?clean_outlier()` for its documentation.
 
 ## Comprehensive Example Workflow: From Simulation to Estimation
 
