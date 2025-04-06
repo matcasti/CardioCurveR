@@ -12,3 +12,4 @@
 ^logo\.png$
 ^revdep$
 ^CRAN-SUBMISSION$
+^vignettes/articles$

@@ -4,7 +4,41 @@ authors:
   Matías Castillo-Aguilar:
     href: "https://www.bayesically-speaking.com/cv"
 
+navbar:
+  structure:
+    left:  [intro, articles, reference, tutorials]
+    right: [search, news, github, lightswitch]
+  components:
+    articles:
+      icon: fa fa-fw fa-book
+      text: Articles
+      menu:
+      - text: External Articles
+      - text: Original Scientific Paper
+        href: https://www.nature.com/articles/s41598-025-93654-6
+      - text: Explainer Blog Post
+        href: https://doi.org/10.59350/qfn6w-qyt38
+      #- text: Title A2
+      #  href: articles/a2.html
+      #- text: -------
+      #- text: "Category B"
+      #- text: Article B1
+      #  href: articles/b1.html
+    reference:
+      icon: fab fa-r-project
+      text: Documentation
+      href: reference/index.html
+    news:
+      icon: fas fa-history
+      href: news/index.html
+
+footer:
+  structure:
+    left: developed_by
+    right: package
+
 template:
+  assets: vignettes/articles
   bootstrap: 5
   light-switch: true
   opengraph:
