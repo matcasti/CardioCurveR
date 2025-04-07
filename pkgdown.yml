@@ -3,7 +3,7 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   articles/CardioCurveR: CardioCurveR.html
-last_built: 2025-04-07T17:17Z
+last_built: 2025-04-07T17:21Z
 urls:
   reference: https://matcasti.github.io/CardioCurveR/reference
   article: https://matcasti.github.io/CardioCurveR/articles
