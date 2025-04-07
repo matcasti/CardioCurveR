@@ -9,14 +9,15 @@ c(
     number   = 1,
     pages    = 8628,
     doi      = "10.1038/s41598-025-93654-6",
-    header = "Original paper's citation with the described statistical model."
+    header   = "Original paper's citation with the described statistical model."
   ),
   bibentry(
     bibtype  = "Manual",
     title    = "CardioCurveR: Nonlinear Modeling of R-R Interval Dynamics",
     author   = person("Matías", "Castillo-Aguilar", , "m99castillo@gmail.com", role = c("aut", "cre", "cph"), comment = c(ORCID = "0000-0001-7291-247X")),
     year     = "2025",
-    url      = "https://github.com/matcasti/CardioCurveR",
-    header  = "R package's citation with the specific R-R interval modeling tools."
+    url      = "https://cran.r-project.org/package=CardioCurveR",
+    doi      = "10.32614/CRAN.package.CardioCurveR",
+    header   = "R package's citation with the specific R-R interval modeling tools."
   )
 )
