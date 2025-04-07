@@ -62,7 +62,7 @@ parameters:
   component, effectively locating the exercise onset transition in time.
 - **$c$ (c): Recovery Amplitude Scaling Factor.** This parameter links
   the magnitude of the recovery phase to the magnitude of the initial
-  drop ($\beta$). The term `-c * \beta` defines the amplitude of the
+  drop ($\beta$). The term `-c * beta` defines the amplitude of the
   *increase* in RRi during recovery. If $c=1$, the recovery amplitude
   mirrors the drop amplitude. Values of $c$ different from 1 allow the
   model to capture scenarios where the recovery magnitude differs from
@@ -78,7 +78,7 @@ parameters:
   introduces a time delay or advance for the recovery phase relative to
   the drop phase centered at $\tau$. It allows the recovery curve
   component (the second logistic function) to be centered effectively at
-  $t = \\tau + \\delta$, providing flexibility to accurately model the
+  $t = \tau + \delta$, providing flexibility to accurately model the
   timing between the end of the exercise stimulus and the initiation of
   the recovery dynamics.
 
